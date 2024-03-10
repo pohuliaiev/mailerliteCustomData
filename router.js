@@ -24,7 +24,7 @@ router.post("/login", (req, res) => {
   const { password } = req.body
 
   // Check if the password is correct
-  if (password === "companio2024") {
+  if (password === process.env.PSWD) {
     req.session.isAuthenticated = true
     req.flash("success", "Login successful")
     res.redirect("/")
