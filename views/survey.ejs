@@ -1,0 +1,130 @@
+<%- include('header') %>
+<main>
+  <div class="container">
+    <div class="lds-ring d-none" id="preloader">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="col align-self-end">Last updated: <span id="last-date"> <% if (lastUpdate.length !== 0) { %> <%= lastUpdate[0].date %> <% } %> </span></div>
+    <div class="d-flex justify-content-center mb-5 mt-3"><button type="button" class="btn btn-success" id="click-me">Update</button></div>
+    <h2 class="text-center">Spanish</h2>
+    <h3 class="text-center mt-5">Survey</h3>
+    <div class="d-flex bar-row mt-4" id="progress-es">
+      <% if (surveyDataEs && surveyDataEs.length > 0) { %> <% surveyDataEs[0].survey.forEach(item => { %>
+      <div class="col">
+        <h4><%= item.title %></h4>
+        <div class="survey-flex">
+          <% item.items.forEach(sur => { %>
+          <div class="survey-row">
+            <div class="emoji"><%= sur.emoji %></div>
+            <div class="bar">
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" aria-label="Success example" style="width: <%= sur.value %>%" aria-valuenow="<%= sur.value %>" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+            <div class="percentage"><%= sur.value %>%</div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <% }) %> <% } %>
+    </div>
+    <h3 class="text-center mt-5">Feedback</h3>
+    <table class="table table-info table-striped mt-4">
+      <thead>
+        <tr>
+          <th scope="col">Subscriber's email</th>
+          <th scope="col">Feedback</th>
+        </tr>
+      </thead>
+
+      <tbody id="tableEs">
+        <% if (tableDataEs && tableDataEs.length > 0) { %> <% tableDataEs.forEach(item => { %>
+        <tr id="<%= item._id %>">
+          <td><%= item.title %></td>
+          <td class="table-text"><%= item.text %></td>
+        </tr>
+        <% }) %> <% } %>
+      </tbody>
+    </table>
+
+    <h2 class="text-center mt-5">English</h2>
+    <h3 class="text-center mt-4">Survey</h3>
+    <div class="d-flex bar-row mt-4" id="progress-en">
+      <% if (surveyDataEn && surveyDataEn.length > 0) { %> <% surveyDataEn[0].survey.forEach(item => { %>
+      <div class="col">
+        <h4><%= item.title %></h4>
+        <div class="survey-flex">
+          <% item.items.forEach(sur => { %>
+          <div class="survey-row">
+            <div class="emoji"><%= sur.emoji %></div>
+            <div class="bar">
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" aria-label="Success example" style="width: <%= sur.value %>%" aria-valuenow="<%= sur.value %>" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+            <div class="percentage"><%= sur.value %>%</div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <% }) %> <% } %>
+    </div>
+    <table class="table table-info table-striped mt-5">
+      <thead>
+        <tr>
+          <th scope="col">Subscriber's email</th>
+          <th scope="col">Feedback</th>
+        </tr>
+      </thead>
+
+      <tbody id="tableEn">
+        <% if (tableDataEn && tableDataEn.length > 0) { %> <% tableDataEn.forEach(item => { %>
+        <tr id="<%= item._id %>">
+          <td><%= item.title %></td>
+          <td class="table-text"><%= item.text %></td>
+        </tr>
+        <% }) %> <% } %>
+      </tbody>
+    </table>
+  </div>
+</main>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ooops, something happened, try again</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">...</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="dateModal" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="dateModalLabel">No update avaliable</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">Sorry, but that's all for today. Try tomorrow</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/script.js"></script>
+</body>
+</html>
