@@ -4,7 +4,8 @@ const dotenv = require("dotenv")
 dotenv.config()
 
 const SCOPES = JSON.parse(process.env.SCOPES)
-const TOKEN_PATH = process.env.TOKEN_PATH // Change to your desired path
+const tokenString = process.env.TOKEN_STR // Change to your desired path
+const token = JSON.parse(tokenString)
 
 // Create an OAuth2 client
 const { web } = JSON.parse(process.env.GOOGLESECRET)
@@ -14,8 +15,7 @@ const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_u
 // Load or refresh the access token
 async function authorize() {
   try {
-    const token = fs.readFileSync(TOKEN_PATH)
-    oAuth2Client.setCredentials(JSON.parse(token))
+    oAuth2Client.setCredentials(token)
   } catch (err) {
     await getAccessToken()
   }
@@ -31,7 +31,7 @@ async function getAccessToken() {
   const code = "<Paste the code obtained after authorization>"
   const token = await oAuth2Client.getToken(code)
   oAuth2Client.setCredentials(token.tokens)
-  fs.writeFileSync(TOKEN_PATH, JSON.stringify(token.tokens))
+  //  fs.writeFileSync(TOKEN_PATH, JSON.stringify(token.tokens))
 }
 
 // Function to list messages in the inbox
