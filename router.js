@@ -3,6 +3,8 @@ const router = express.Router()
 const mainController = require("./controllers/mainController")
 const Login = require("./models/Login")
 
+const getMailerliteCode = require("./googleMail")
+
 // Middleware to check if the user is authenticated
 const isAuthenticated = (req, res, next, view) => {
   if (req.session.isAuthenticated) {
@@ -31,6 +33,15 @@ router.post("/login", (req, res) => {
   } else {
     req.flash("error", "Incorrect password")
     res.redirect("/")
+  }
+})
+
+router.get("/check-gmail-api", async (req, res) => {
+  try {
+    const result = await getMailerliteCode()
+    res.json({ result })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
   }
 })
 
