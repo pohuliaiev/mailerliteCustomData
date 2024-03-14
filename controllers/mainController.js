@@ -1,3 +1,5 @@
+const dotenv = require("dotenv")
+dotenv.config()
 const tableCollectionEn = require("../db").db().collection("tableEn")
 const tableCollectionEs = require("../db").db().collection("tableEs")
 const surveyCollectionEn = require("../db").db().collection("surveyEn")
@@ -82,6 +84,27 @@ exports.clicks = async function (req, res) {
   }
 }
 
+exports.showAutomation = function (collection, postUrl, pageTitle) {
+  return async function (req, res, next) {
+    if (req.session.isAuthenticated) {
+      try {
+        // Fetch data from the collection
+        const clicks = await collection.find().toArray()
+        const lastUpdate = await collection.find().toArray()
+        const url = req.url
+        res.render("general", { clicks, lastUpdate, url, postUrl, pageTitle })
+      } catch (error) {
+        console.error("Error fetching data:", error)
+        res.status(500).send("Internal Server Error")
+      }
+    } else {
+      // Retrieve flash messages and render the login page with messages
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
+    }
+  }
+}
+
 exports.tableUpdate = async function (req, res) {
   try {
     const result = await mailerliteImport()
@@ -114,13 +137,13 @@ exports.tableUpdate = async function (req, res) {
 
 exports.clickUpdate = async function (req, res) {
   try {
-    const result = await MailerliteModel.returnAutomation()
+    const result = await MailerliteModel.returnAutomation(process.env.AUTID)
     const currentDate = formattedCurrentDate()
     const lastUpdate = await clickDataCollection.find().toArray()
 
     // Assuming `tableUpdateTemplate` returns the updated data
     if (lastUpdate && lastUpdate[0].date !== currentDate) {
-      MailerliteModel.updateAutomation()
+      MailerliteModel.updateAutomation(clickDataCollection, process.env.AUTID)
     }
 
     // Send the updated data as JSON response
@@ -131,12 +154,44 @@ exports.clickUpdate = async function (req, res) {
         opens_count: result.dataClicks.opens_count,
         open_rate: result.dataClicks.open_rate,
         click_rate: result.dataClicks.click_rate,
-        click_to_open_rate: result.dataClicks.click_to_open_rate
+        click_to_open_rate: result.dataClicks.click_to_open_rate,
+        total: result.dataClicks.total
       },
       emails: result.emails
     })
   } catch (error) {
     console.error("Error updating data:", error)
     res.status(500).json({ success: false, error: "Internal Server Error" })
+  }
+}
+
+exports.automationUpdate = function (collection, id) {
+  return async function (req, res) {
+    try {
+      const result = await MailerliteModel.returnAutomation(id)
+      const currentDate = formattedCurrentDate()
+      const lastUpdate = await collection.findOne({ date: currentDate })
+      // Assuming `tableUpdateTemplate` returns the updated data
+      if (!lastUpdate) {
+        await MailerliteModel.updateAutomation(collection, id)
+      }
+
+      // Send the updated data as JSON response
+      res.json({
+        success: true,
+        date: currentDate,
+        general: {
+          opens_count: result.dataClicks.opens_count,
+          open_rate: result.dataClicks.open_rate,
+          click_rate: result.dataClicks.click_rate,
+          click_to_open_rate: result.dataClicks.click_to_open_rate,
+          total: result.dataClicks.total
+        },
+        emails: result.emails
+      })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
   }
 }

@@ -1,0 +1,5 @@
+exports.generalMainEnCollection = require("../db").db().collection("generalMainEn")
+exports.generalMainEsCollection = require("../db").db().collection("generalMainEs")
+exports.courseEsCollection = require("../db").db().collection("courseEs")
+exports.courseEnCollection = require("../db").db().collection("courseEn")
+exports.cleaningBotCollection = require("../db").db().collection("cleaningBot")

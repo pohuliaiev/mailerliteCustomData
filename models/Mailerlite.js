@@ -1,7 +1,7 @@
 const MailerLite = require("@mailerlite/mailerlite-nodejs").default
 const dotenv = require("dotenv")
 dotenv.config()
-const clickDataCollection = require("../db").db().collection("clickData")
+
 const Table = require("../models/Table")
 
 const formattedCurrentDate = Table.formattedCurrentDate
@@ -17,7 +17,7 @@ const getAutomation = async function (id) {
     mailerlite.automations
       .find(id)
       .then(response => {
-        Object.assign(dataClicks, { opens_count: response.data.data.stats.opens_count, open_rate: response.data.data.stats.open_rate.string, click_rate: response.data.data.stats.click_rate.string, click_to_open_rate: response.data.data.stats.click_to_open_rate.string })
+        Object.assign(dataClicks, { opens_count: response.data.data.stats.opens_count, open_rate: response.data.data.stats.open_rate.string, click_rate: response.data.data.stats.click_rate.string, click_to_open_rate: response.data.data.stats.click_to_open_rate.string, total: response.data.data.stats.sent })
 
         response.data.data.steps.forEach(step => {
           if (step.type === "email") {
@@ -41,9 +41,9 @@ const getAutomation = async function (id) {
   })
 }
 
-exports.returnAutomation = async function () {
+exports.returnAutomation = async function (id) {
   try {
-    const { dataClicks, emails } = await getAutomation(process.env.AUTID) // Replace 'yourId' with the actual ID
+    const { dataClicks, emails } = await getAutomation(id) // Replace 'yourId' with the actual ID
 
     return { dataClicks, emails }
   } catch (error) {
@@ -52,18 +52,19 @@ exports.returnAutomation = async function () {
   }
 }
 
-exports.updateAutomation = async function () {
-  const automations = await this.returnAutomation()
-  const existingDate = await clickDataCollection.findOne({ date: formattedCurrentDate() })
+exports.updateAutomation = async function (collection, id) {
+  const automations = await this.returnAutomation(id)
+  const existingDate = await collection.findOne({ date: formattedCurrentDate() })
 
   if (!existingDate)
-    await clickDataCollection.insertOne({
+    await collection.insertOne({
       date: formattedCurrentDate(),
       general: {
         opens_count: automations.dataClicks.opens_count,
         open_rate: automations.dataClicks.open_rate,
         click_rate: automations.dataClicks.click_rate,
-        click_to_open_rate: automations.dataClicks.click_to_open_rate
+        click_to_open_rate: automations.dataClicks.click_to_open_rate,
+        total: automations.dataClicks.total
       },
       emails: automations.emails
     })

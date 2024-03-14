@@ -139,12 +139,12 @@ function handleClick(e) {
   }
 }
 
-function udpateClicks(e) {
+function udpateClicks(url) {
   if (lastDateValue !== formattedCurrentDate()) {
     loader.classList.remove("d-none")
     fadeOverlay.style.display = "block"
     axios
-      .post("/update-clicks")
+      .post(url)
       .then(response => {
         const data = response.data
         loader.classList.add("d-none")
@@ -202,14 +202,84 @@ function udpateClicks(e) {
   }
 }
 
+function udpateAutomations(url) {
+  if (lastDateValue !== formattedCurrentDate()) {
+    loader.classList.remove("d-none")
+    fadeOverlay.style.display = "block"
+    axios
+      .post(url)
+      .then(response => {
+        const data = response.data
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        // Handle the data received from the server
+
+        if (data.success) {
+          console.log(data)
+
+          const tGeneral = document.getElementById("tableGeneral")
+
+          document.getElementById("last-date").textContent = data.date
+          // Access data.tableDataEs and data.tableDataEn here
+          function updateTable(obj, tableDiv, date) {
+            const row = document.createElement("tr")
+            const tdClickRate = document.createElement("td")
+            const tdClickToOpenRate = document.createElement("td")
+            const tdDate = document.createElement("td")
+            const tdOpenCount = document.createElement("td")
+            tdDate.textContent = date
+            tdClickRate.textContent = obj.click_rate
+            tdClickToOpenRate.textContent = obj.click_to_open_rate
+            tdOpenCount.textContent = `${obj.opens_count} (${obj.open_rate})`
+            row.appendChild(tdDate)
+            row.appendChild(tdOpenCount)
+            row.appendChild(tdClickRate)
+            row.appendChild(tdClickToOpenRate)
+            tableDiv.appendChild(row)
+          }
+
+          updateTable(data.general, tGeneral, data.date)
+        } else {
+          loader.classList.add("d-none")
+          fadeOverlay.style.display = "none"
+          myModal.show()
+          console.error("Server error:", data.error)
+        }
+      })
+      .catch(error => {
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        myModal.show()
+        console.error("Axios error:", error)
+      })
+  } else {
+    dateModal.show()
+  }
+}
+
 // Get the button element by its ID
 const myButton = document.getElementById("click-me")
 const clickUpdate = document.getElementById("update-clicks")
+const automationUpdate = document.getElementById("update-general-en")
+
+const automationsClass = document.getElementsByClassName("automation-update")
+const automationUpdateButton = document.getElementsByClassName("automation-update")[0]
 
 // Attach the onclick event handler to the button
+
 if (myButton) {
   myButton.onclick = handleClick
 }
+
 if (clickUpdate) {
-  clickUpdate.onclick = udpateClicks
+  clickUpdate.onclick = function () {
+    udpateClicks("/update-clicks")
+  }
+}
+
+if (automationUpdateButton) {
+  automationUpdateButton.onclick = function () {
+    const postUrl = automationUpdateButton.getAttribute("data-post")
+    udpateAutomations(postUrl)
+  }
 }
