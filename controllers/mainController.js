@@ -51,8 +51,10 @@ exports.survey = async function (req, res) {
       const tableDataEs = await tableCollectionEs.find().toArray()
       const surveyDataEn = await surveyCollectionEn.find().toArray()
       const surveyDataEs = await surveyCollectionEs.find().toArray()
-      const lastUpdate = await dateCollection.find().toArray()
+      const lastUpdateSort = await surveyCollectionEn.find().sort({ date: -1 }).toArray()
+      const lastUpdate = lastUpdateSort[0].date
       const url = req.url
+      console.log(lastUpdate)
       res.render("survey", { tableDataEn, tableDataEs, lastUpdate, surveyDataEn, surveyDataEs, url })
     } catch (error) {
       console.error("Error fetching data:", error)
