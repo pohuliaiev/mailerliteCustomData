@@ -11,6 +11,13 @@ const generalMainEsCollection = dbCollection.generalMainEsCollection
 const courseEsCollection = dbCollection.courseEsCollection
 const courseEnCollection = dbCollection.courseEnCollection
 const cleaningBotCollection = dbCollection.cleaningBotCollection
+const courseEs2Collection = dbCollection.courseEs2Collection
+const crispEnCollection = dbCollection.crispEnCollection
+const cartAbandCollection = dbCollection.cartAbandCollection
+const c1SpainFupCollection = dbCollection.c1SpainFupCollection
+const c1SpainNsCollection = dbCollection.c1SpainNsCollection
+const pdfEnCollection = dbCollection.pdfEnCollection
+const pdfEsCollection = dbCollection.pdfEsCollection
 
 // Middleware to check if the user is authenticated
 const isAuthenticated = (req, res, next, view) => {
@@ -44,6 +51,29 @@ router.post("/update-course-en", mainController.automationUpdate(courseEnCollect
 
 router.get("/cleaning-bot", mainController.showAutomation(cleaningBotCollection, "/cleaning-bot-update", "Cleaning Bot"))
 router.post("/cleaning-bot-update", mainController.automationUpdate(cleaningBotCollection, process.env.CLNBOT))
+
+router.get("/course-es-2", mainController.showAutomation(courseEs2Collection, "/update-course-es-2", "Curso: Cómo Abrir Una Empresa En Estonia"))
+router.post("/update-course-es-2", mainController.automationUpdate(courseEs2Collection, process.env.CRSES2))
+
+router.get("/crisp-en-automation", mainController.showAutomation(crispEnCollection, "/update-crisp-en-automation", "Crisp ➡️ EN-Subscriber"))
+router.post("/update-crisp-en-automation", mainController.automationUpdate(crispEnCollection, process.env.CRSPEN))
+
+router.get("/cart-aband", mainController.showAutomation(cartAbandCollection, "/update-cart-aband", "Cart Abandonment"))
+router.post("/update-cart-aband", mainController.automationUpdate(cartAbandCollection, process.env.CRTABND))
+
+router.get("/c1-followup", mainController.showAutomation(c1SpainFupCollection, "/update-c1-followup", "C1 Spain Sales Funnel Follow-Up"))
+router.post("/update-c1-followup", mainController.automationUpdate(c1SpainFupCollection, process.env.C1SPFLUP))
+
+router.get("/c1-noshow", mainController.showAutomation(c1SpainNsCollection, "/update-c1-noshow", "C1 Spain Sales Funnel No-Show"))
+router.post("/update-c1-noshow", mainController.automationUpdate(c1SpainNsCollection, process.env.C1SPFNS))
+
+router.get("/pdf-en", mainController.showAutomation(pdfEnCollection, "/update-pdf-en", "PDF English"))
+router.post("/update-pdf-en", mainController.automationUpdate(pdfEnCollection, process.env.PDFEN))
+
+router.get("/pdf-es", mainController.showAutomation(pdfEsCollection, "/update-pdf-es", "PDF Spanish"))
+router.post("/update-pdf-es", mainController.automationUpdate(pdfEsCollection, process.env.PDFES))
+
+router.get("/mailerlite", mainController.showMailerlitePage("Mailerlite automations list"))
 
 router.get("/crisp", mainController.crispPage("Crisp Data"))
 router.post("/crisp-update", mainController.crispDataUpdate())

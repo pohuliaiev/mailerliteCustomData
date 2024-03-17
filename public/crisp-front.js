@@ -24,9 +24,11 @@ function updateElementWithPercentage(id, value) {
   if (value < 0) {
     element.classList.add("text-danger")
     element.classList.remove("text-success")
+    element.innerHTML += `<i class="bi bi-arrow-down-square-fill"></i>`
   } else if (value > 0) {
     element.classList.add("text-success")
     element.classList.remove("text-danger")
+    element.innerHTML += `<i class="bi bi-arrow-up-square-fill"></i>`
   }
 }
 
@@ -78,6 +80,10 @@ function udpateCrisp(url) {
           document.getElementById("another_day").textContent = data.anotherDay
 
           updateElementWithPercentage("total_conversations_prev", data.prevConversations)
+          updateElementWithPercentage("not_solved_prev", data.prevUnresolved)
+          updateElementWithPercentage("solved_prev", data.prevResolved)
+          updateElementWithPercentage("same_day_prev", data.prevSameDay)
+          updateElementWithPercentage("another_day_prev", data.prevAnotherDay)
         } else {
           loader.classList.add("d-none")
           fadeOverlay.style.display = "none"

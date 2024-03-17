@@ -25,7 +25,7 @@ async function agentsArray() {
     const agentsOperator = agentsArray
       .filter(agent => agent.type === "operator")
       .filter(agent => agent.details.title === null)
-      .filter(agent => agent.details.last_name !== "Pohuliaiev")
+      .filter(agent => agent.details.last_name !== "Pohuliaiev" && agent.details.last_name !== "Oliveira" && agent.details.last_name !== "Calvelo")
 
     agentsOperator.forEach(function (operator) {
       agents.push({
@@ -60,7 +60,7 @@ async function conversationsArray(agent, first, last) {
       })
         .then(response => {
           const resData = response.data.data
-          console.log(resData.length)
+
           if (resData.length === 0) {
             continueLoop = false // Set the flag to false to break out of the loop
             return

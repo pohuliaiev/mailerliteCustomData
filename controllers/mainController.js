@@ -109,6 +109,26 @@ exports.showAutomation = function (collection, postUrl, pageTitle) {
   }
 }
 
+exports.showMailerlitePage = function (pageTitle) {
+  return async function (req, res, next) {
+    if (req.session.isAuthenticated) {
+      try {
+        // Fetch data from the collection
+
+        const url = req.url
+        res.render("mailerliteMain", { url, pageTitle })
+      } catch (error) {
+        console.error("Error fetching data:", error)
+        res.status(500).send("Internal Server Error")
+      }
+    } else {
+      // Retrieve flash messages and render the login page with messages
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
+    }
+  }
+}
+
 exports.tableUpdate = async function (req, res) {
   try {
     const result = await mailerliteImport()
@@ -223,12 +243,17 @@ exports.crispDataUpdate = function () {
   return async function (req, res) {
     try {
       const agentId = req.body.id
-      //console.log(agentId)
       const startDate = req.body.start_date
       const endDate = req.body.end_date
       const conversations = await CrispData.conversations(agentId, startDate, endDate)
       const [previousStartDate, previousEndDate] = DateRange.getPreviousPeriod(startDate, endDate)
       const prevConversations = await CrispData.conversations(agentId, previousStartDate, previousEndDate)
+      const prevConversationsFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.allConversations.length, conversations.allConversations.length).toFixed(2))
+      const prevResolvedFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.resolved, conversations.resolved).toFixed(2))
+      const prevUnresolvedFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.unresolved, conversations.unresolved).toFixed(2))
+      const prevSameDayfixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.sameDay, conversations.sameDay).toFixed(2))
+      const prevAnotherDayFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.anotherDay, conversations.anotherDay).toFixed(2))
+
       res.json({
         success: true,
         periodConversations: conversations.allConversations.length,
@@ -237,11 +262,11 @@ exports.crispDataUpdate = function () {
         unresolved: conversations.unresolved,
         sameDay: conversations.sameDay,
         anotherDay: conversations.anotherDay,
-        prevConversations: DateRange.calculatePercentageDifference(conversations.allConversations.length, prevConversations.allConversations.length),
-        prevResolved: DateRange.calculatePercentageDifference(conversations.resolved, prevConversations.resolved),
-        prevUnresolved: DateRange.calculatePercentageDifference(conversations.unresolved, prevConversations.unresolved),
-        prevSameDay: DateRange.calculatePercentageDifference(conversations.sameDay, prevConversations.sameDay),
-        prevAnotherDay: DateRange.calculatePercentageDifference(conversations.anotherDay, prevConversations.anotherDay)
+        prevConversations: prevConversationsFixed,
+        prevResolved: prevResolvedFixed,
+        prevUnresolved: prevUnresolvedFixed,
+        prevSameDay: prevSameDayfixed,
+        prevAnotherDay: prevAnotherDayFixed
       })
     } catch (error) {
       console.error("Error updating data:", error)
