@@ -10,6 +10,8 @@ const clickDataCollection = require("../db").db().collection("clickData")
 const mailerliteImport = require("../mailerliteImport")
 const Table = require("../models/Table")
 const MailerliteModel = require("../models/Mailerlite")
+const CrispData = require("../models/Crisp")
+const DateRange = require("../models/DateRange")
 
 const formattedCurrentDate = Table.formattedCurrentDate
 
@@ -190,6 +192,56 @@ exports.automationUpdate = function (collection, id) {
           total: result.dataClicks.total
         },
         emails: result.emails
+      })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.crispPage = function (pageTitle) {
+  return async function (req, res, next) {
+    if (req.session.isAuthenticated) {
+      try {
+        const url = req.url
+        const agents = await CrispData.agents
+        res.render("crisp", { url, pageTitle, agents })
+      } catch (error) {
+        console.error("Error fetching data:", error)
+        res.status(500).send("Internal Server Error")
+      }
+    } else {
+      // Retrieve flash messages and render the login page with messages
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
+    }
+  }
+}
+
+exports.crispDataUpdate = function () {
+  return async function (req, res) {
+    try {
+      const agentId = req.body.id
+      //console.log(agentId)
+      const startDate = req.body.start_date
+      const endDate = req.body.end_date
+      const conversations = await CrispData.conversations(agentId, startDate, endDate)
+      const [previousStartDate, previousEndDate] = DateRange.getPreviousPeriod(startDate, endDate)
+      const prevConversations = await CrispData.conversations(agentId, previousStartDate, previousEndDate)
+      res.json({
+        success: true,
+        periodConversations: conversations.allConversations.length,
+        conversations: conversations.allConversations,
+        resolved: conversations.resolved,
+        unresolved: conversations.unresolved,
+        sameDay: conversations.sameDay,
+        anotherDay: conversations.anotherDay,
+        prevConversations: DateRange.calculatePercentageDifference(conversations.allConversations.length, prevConversations.allConversations.length),
+        prevResolved: DateRange.calculatePercentageDifference(conversations.resolved, prevConversations.resolved),
+        prevUnresolved: DateRange.calculatePercentageDifference(conversations.unresolved, prevConversations.unresolved),
+        prevSameDay: DateRange.calculatePercentageDifference(conversations.sameDay, prevConversations.sameDay),
+        prevAnotherDay: DateRange.calculatePercentageDifference(conversations.anotherDay, prevConversations.anotherDay)
       })
     } catch (error) {
       console.error("Error updating data:", error)

@@ -45,6 +45,9 @@ router.post("/update-course-en", mainController.automationUpdate(courseEnCollect
 router.get("/cleaning-bot", mainController.showAutomation(cleaningBotCollection, "/cleaning-bot-update", "Cleaning Bot"))
 router.post("/cleaning-bot-update", mainController.automationUpdate(cleaningBotCollection, process.env.CLNBOT))
 
+router.get("/crisp", mainController.crispPage("Crisp Data"))
+router.post("/crisp-update", mainController.crispDataUpdate())
+
 router.post("/login", (req, res) => {
   const { password } = req.body
 
