@@ -50,7 +50,7 @@
                       <td width="20%" id="<%= item._id %>"><% if (item.general.comment) { %>
                         <%= item.general.comment %>
                       <% } else { %>
-                        <%- '<button class="btn btn-info">Add Comment</button>' %>
+                        <%- '<button class="btn btn-info" onclick=testFunction(this)>Add Comment</button>' %>
                       <% } %></td>
                     </tr>
                   <% }); %>

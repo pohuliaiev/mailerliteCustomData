@@ -1,0 +1,212 @@
+<%- include('header') %>
+    <main>
+      <div class="container">
+        <div class="lds-ring d-none" id="preloader">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div class="d-flex justify-content-center mb-5 mt-3"><button type="button" class="btn btn-success seo-update">Update</button></div>
+        <h1 class="text-center"><%= pageTitle %></h1>
+
+        <div class="tabs-container mt-3">
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#companio" type="button" role="tab" aria-controls="companio" aria-selected="true">Companio</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#one" type="button" role="tab" aria-controls="one" aria-selected="false">Companio One</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#empresa" type="button" role="tab" aria-controls="empresa" aria-selected="false">Tuempresaenestonia</button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="companio" role="tabpanel" aria-labelledby="companio" tabindex="0">
+              
+              <table class="table table-info table-striped mt-5" style="font-size: 14px">
+                <thead>
+                  <tr>
+                    <th scope="col" width="5%">Date</th>
+                    <th scope="col" width="5%">Clicks</th>
+                    <th scope="col" width="5%">Impressions</th>
+                    <th scope="col" width="5%">CTR</th>
+                    <th scope="col" width="5%">Position</th>
+                    <th scope="col" width="5%">Mobile</th>
+                    <th scope="col" width="5%">Desktop</th>
+                    <th scope="col" width="5%">Health Score</th>
+                    <th scope="col" width="5%">Visibility Es</th>
+                    <th scope="col" width="5%">Visibility De</th>
+                    <th scope="col" width="5%">Visibility Uk</th>
+                    <!--th scope="col" width="10%">SEO Comments</th>
+                    <th scope="col" width="10%">CMO Comments</th-->
+                  </tr>
+                </thead>
+  
+                <tbody>
+                  <% companio.forEach(item => { %>
+                    <tr>
+                      <td width="5%"><%= item.date %></td>
+                      <td width="5%"><%= item.clicks %></td>
+                      <td width="5%"><%= item.impressions %></td>
+                      <td width="5%"><%= (parseFloat(item.ctr)*100).toFixed(2) %>%</td>
+                      <td width="5%"><%= parseFloat(item.position).toFixed() %></td>
+                      <td width="5%"><%= item.mobile %></td>
+                      <td width="5%"><%= item.desktop %></td>
+                      <td width="5%"><%= item.healthScore %></td>
+                      <td width="5%"><%= item.visibilityEs %></td>
+                      <td width="5%"><%= item.visibilityDe %></td>
+                      <td width="5%"><%= item.visibilityUk %></td>
+                      <!--td width="10%"><%= item.seoComment %></td>
+                      <td width="10%"><%= item.cmoUpdate %></td-->
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            
+            
+            
+            </div>
+        
+            
+            <div class="tab-pane fade" id="one" role="tabpanel" aria-labelledby="one" tabindex="0">
+              <table class="table table-info table-striped mt-5" style="font-size: 14px">
+                <thead>
+                  <tr>
+                    <th scope="col" width="5%">Date</th>
+                    <th scope="col" width="5%">Clicks</th>
+                    <th scope="col" width="5%">Impressions</th>
+                    <th scope="col" width="5%">CTR</th>
+                    <th scope="col" width="5%">Position</th>
+                    <th scope="col" width="5%">Mobile</th>
+                    <th scope="col" width="5%">Desktop</th>
+                    <th scope="col" width="5%">Health Score</th>
+                    <th scope="col" width="5%">Visibility Es</th>
+                    <th scope="col" width="5%">Visibility En</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  
+                 
+                    
+                    <% one.forEach(item => { %>
+                      
+                        <tr>
+                          <td width="5%"><%= item.date %></td>
+                      <td width="5%"><%= item.clicks %></td>
+                      <td width="5%"><%= item.impressions %></td>
+                      <td width="5%"><%= (parseFloat(item.ctr)*100).toFixed(2) %>%</td>
+                      <td width="5%"><%= parseFloat(item.position).toFixed() %></td>
+                      <td width="5%"><%= item.mobile %></td>
+                      <td width="5%"><%= item.desktop %></td>
+                      <td width="5%"><%= item.healthScore %></td>
+                      <td width="5%"><%= item.visibilityEs %></td>
+                      <td width="5%"><%= item.visibilityEn %></td>
+                        </tr>
+                      
+                    <% }); %>
+                    
+                  
+                  
+                </tbody>
+              </table>
+            </div>
+
+            <div class="tab-pane fade" id="empresa" role="tabpanel" aria-labelledby="empresa" tabindex="0">
+              <table class="table table-info table-striped mt-5" style="font-size: 14px">
+                <thead>
+                  <tr>
+                    <th scope="col" width="5%">Date</th>
+                    <th scope="col" width="5%">Clicks</th>
+                    <th scope="col" width="5%">Impressions</th>
+                    <th scope="col" width="5%">CTR</th>
+                    <th scope="col" width="5%">Position</th>
+                    <th scope="col" width="5%">Mobile</th>
+                    <th scope="col" width="5%">Desktop</th>
+                    <th scope="col" width="5%">Health Score</th>
+                    <th scope="col" width="5%">Visibility Es</th>
+                    
+                  </tr>
+                </thead>
+
+                <tbody>
+                  
+                 
+                    
+                    <% tuempresa.forEach(item => { %>
+                      
+                        <tr>
+                          <td width="5%"><%= item.date %></td>
+                      <td width="5%"><%= item.clicks %></td>
+                      <td width="5%"><%= item.impressions %></td>
+                      <td width="5%"><%= (parseFloat(item.ctr)*100).toFixed(2) %>%</td>
+                      <td width="5%"><%= parseFloat(item.position).toFixed() %></td>
+                      <td width="5%"><%= item.mobile %></td>
+                      <td width="5%"><%= item.desktop %></td>
+                      <td width="5%"><%= item.healthScore %></td>
+                      <td width="5%"><%= item.visibilityEs %></td>
+                      <td width="5%"><%= item.visibilityEn %></td>
+                        </tr>
+                      
+                    <% }); %>
+                    
+                  
+                  
+                </tbody>
+              </table>
+            </div>
+
+            
+          
+            
+
+             
+
+             
+              
+              
+              
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Ooops, something happened, try again</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">...</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="dateModal" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="dateModalLabel">No update avaliable</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">Sorry, but that's all for today. Try tomorrow</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/script.js"></script>
+  </body>
+</html>

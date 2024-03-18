@@ -12,6 +12,8 @@ const Table = require("../models/Table")
 const MailerliteModel = require("../models/Mailerlite")
 const CrispData = require("../models/Crisp")
 const DateRange = require("../models/DateRange")
+const { ObjectId } = require("mongodb")
+const { getSearchAnalyticsData, getPageSpeedScores } = require("../models/Seo")
 
 const formattedCurrentDate = Table.formattedCurrentDate
 
@@ -28,6 +30,10 @@ function flashMessagesMiddleware(req, res, next) {
 const parseDate = dateStr => {
   const parts = dateStr.split(".")
   return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
+}
+
+function filterBySite(arr, site) {
+  return arr.filter(obj => obj.site === site)
 }
 
 exports.home = async function (req, res) {
@@ -80,7 +86,7 @@ exports.clicks = async function (req, res) {
     try {
       // Fetch data from the collection
       const clicks = await clickDataCollection.find().toArray()
-      console.log(clicks)
+
       clicks.sort((a, b) => parseDate(b.date) - parseDate(a.date))
       const lastUpdate = await clickDataCollection.find().toArray()
       const url = req.url
@@ -107,6 +113,34 @@ exports.showAutomation = function (collection, postUrl, pageTitle) {
         const lastUpdate = await collection.find().toArray()
         const url = req.url
         res.render("general", { clicks, lastUpdate, url, postUrl, pageTitle })
+      } catch (error) {
+        console.error("Error fetching data:", error)
+        res.status(500).send("Internal Server Error")
+      }
+    } else {
+      // Retrieve flash messages and render the login page with messages
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
+    }
+  }
+}
+
+exports.seoDisplay = function (collection, pageTitle) {
+  return async function (req, res, next) {
+    if (req.session.isAuthenticated) {
+      try {
+        // Fetch data from the collection
+
+        const seo = await collection.find().toArray()
+        const companio = filterBySite(seo, "companio.co")
+        const one = filterBySite(seo, "one.companio.co")
+        const tuempresa = filterBySite(seo, "tuempresaenestonia.com")
+        companio.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+        one.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+        tuempresa.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+        const lastUpdate = await collection.find().toArray()
+        const url = req.url
+        res.render("seo", { companio, one, url, tuempresa, pageTitle })
       } catch (error) {
         console.error("Error fetching data:", error)
         res.status(500).send("Internal Server Error")
@@ -289,27 +323,22 @@ exports.addComment = function (collection) {
   return async function (req, res) {
     try {
       const id = req.body.itemId
+      const objectId = new ObjectId(id)
       const comment = req.body.comment
+      const collectionArr = await collection.find().toArray()
 
-      // Find the corresponding document in the database and update it with the new comment
-      await collection.findOneAndUpdate(
-        { _id: id },
-        { $set: { "general.comment": comment } }, // Use $set to update or create the 'general.comment' field
-        { new: true, upsert: true }, // Set upsert to true to create the document if it doesn't exist
-        (err, doc) => {
-          if (err) {
-            console.error("Error:", err)
-            res.status(500).send("Error updating document")
-          } else {
-            console.log("Document updated:", doc)
-            res.status(200).send("Comment added successfully")
-          }
-        }
-      )
-      // Send the updated data as JSON response
-      res.json({
-        success: true
-      })
+      // Check if the document exists
+      const existingDoc = await collection.findOne({ _id: objectId })
+      if (!existingDoc) {
+        console.log("404")
+      }
+
+      // Update the document
+      const updatedDoc = await collection.findOneAndUpdate({ _id: objectId }, { $set: { "general.comment": comment } }, { new: true })
+
+      // Handle success
+      console.log("Updated document:", updatedDoc)
+      res.json({ success: true, updatedDoc })
     } catch (error) {
       console.error("Error updating data:", error)
       res.status(500).json({ success: false, error: "Internal Server Error" })
