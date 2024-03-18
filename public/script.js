@@ -6,6 +6,10 @@ const dateModal = new bootstrap.Modal("#dateModal", {
   keyboard: false
 })
 
+const commentModal = new bootstrap.Modal("#commentModal", {
+  keyboard: false
+})
+
 const lastDateValue = document.getElementById("last-date").textContent.trim()
 
 const loader = document.getElementById("preloader")
@@ -164,11 +168,14 @@ function udpateClicks(url) {
             const tdClickToOpenRate = document.createElement("td")
             const tdDate = document.createElement("td")
             const tdOpenCount = document.createElement("td")
+            const tdTotal = document.createElement("td")
             tdDate.textContent = date
+            tdTotal.textContent = obj.total
             tdClickRate.textContent = obj.click_rate
             tdClickToOpenRate.textContent = obj.click_to_open_rate
             tdOpenCount.textContent = `${obj.opens_count} (${obj.open_rate})`
             row.appendChild(tdDate)
+            row.appendChild(tdTotal)
             row.appendChild(tdOpenCount)
             row.appendChild(tdClickRate)
             row.appendChild(tdClickToOpenRate)
@@ -227,11 +234,14 @@ function udpateAutomations(url) {
             const tdClickToOpenRate = document.createElement("td")
             const tdDate = document.createElement("td")
             const tdOpenCount = document.createElement("td")
+            const tdTotal = document.createElement("td")
             tdDate.textContent = date
+            tdTotal.textContent = obj.total
             tdClickRate.textContent = obj.click_rate
             tdClickToOpenRate.textContent = obj.click_to_open_rate
             tdOpenCount.textContent = `${obj.opens_count} (${obj.open_rate})`
             row.appendChild(tdDate)
+            row.appendChild(tdTotal)
             row.appendChild(tdOpenCount)
             row.appendChild(tdClickRate)
             row.appendChild(tdClickToOpenRate)
@@ -282,4 +292,52 @@ if (automationUpdateButton) {
     const postUrl = automationUpdateButton.getAttribute("data-post")
     udpateAutomations(postUrl)
   }
+}
+
+//adding comment
+
+function testFunction(e) {
+  const parent = e.parentNode
+  const id = parent.getAttribute("id")
+  let modal = document.getElementById("commentModal")
+  modal.setAttribute("data-item-id", id)
+
+  commentModal.show()
+}
+
+function addComment() {
+  const comment = document.getElementById("commentTextarea").value
+
+  const itemId = document.getElementById("commentModal").getAttribute("data-item-id")
+  axios
+    .post("/add-comment", {
+      itemId,
+      comment
+    })
+    .then(response => {
+      const data = response.data
+      loader.classList.add("d-none")
+      fadeOverlay.style.display = "none"
+      // Handle the data received from the server
+
+      if (data.success) {
+        console.log(data)
+        document.getElementById(itemId).textContent = ""
+        document.getElementById(itemId).textContent = comment
+        commentModal.hide()
+      } else {
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        commentModal.hide()
+        myModal.show()
+        console.error("Server error:", data.error)
+      }
+    })
+    .catch(error => {
+      loader.classList.add("d-none")
+      fadeOverlay.style.display = "none"
+      commentModal.hide()
+      myModal.show()
+      console.error("Axios error:", error)
+    })
 }

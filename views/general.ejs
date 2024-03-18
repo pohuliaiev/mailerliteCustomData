@@ -19,9 +19,11 @@
               <thead>
                 <tr>
                   <th scope="col">Date</th>
+                  <th scope="col">Sent</th>
                   <th scope="col">Opened (%)</th>
                   <th scope="col">Clicked</th>
                   <th scope="col">Click to open rate</th>
+                  <th scope="col" width="20%">Comment</th>
                 </tr>
               </thead>
 
@@ -29,9 +31,11 @@
                 <% clicks.forEach(item => { %>
                   <tr>
                     <td><%= item.date %></td>
+                    <td><%= item.general.total %></td>
                     <td><%= item.general.opens_count %> (<%= item.general.open_rate %>)</td>
                     <td><%= item.general.click_rate %></td>
                     <td><%= item.general.click_to_open_rate %></td>
+                    <td width="20%"><%= item.general.comment %></td>
                   </tr>
                 <% }); %>
               </tbody>

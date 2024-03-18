@@ -18,6 +18,8 @@ const c1SpainFupCollection = dbCollection.c1SpainFupCollection
 const c1SpainNsCollection = dbCollection.c1SpainNsCollection
 const pdfEnCollection = dbCollection.pdfEnCollection
 const pdfEsCollection = dbCollection.pdfEsCollection
+const onboardCollection = dbCollection.onboardCollection
+const clickDataCollection = dbCollection.clickDataCollection
 
 // Middleware to check if the user is authenticated
 const isAuthenticated = (req, res, next, view) => {
@@ -77,6 +79,8 @@ router.get("/mailerlite", mainController.showMailerlitePage("Mailerlite automati
 
 router.get("/crisp", mainController.crispPage("Crisp Data"))
 router.post("/crisp-update", mainController.crispDataUpdate())
+
+router.post("/add-comment", mainController.addComment(clickDataCollection))
 
 router.post("/login", (req, res) => {
   const { password } = req.body

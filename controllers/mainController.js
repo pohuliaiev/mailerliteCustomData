@@ -25,6 +25,11 @@ function flashMessagesMiddleware(req, res, next) {
   next()
 }
 
+const parseDate = dateStr => {
+  const parts = dateStr.split(".")
+  return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
+}
+
 exports.home = async function (req, res) {
   if (req.session.isAuthenticated) {
     try {
@@ -33,6 +38,7 @@ exports.home = async function (req, res) {
       const surveyDate = surveyLastUpdate[0].date
       const clickDate = clickLastUpdate[0].date
       const url = req.url
+
       res.render("home", { surveyDate, clickDate, url })
     } catch (error) {
       console.error("Error fetching data:", error)
@@ -74,6 +80,8 @@ exports.clicks = async function (req, res) {
     try {
       // Fetch data from the collection
       const clicks = await clickDataCollection.find().toArray()
+      console.log(clicks)
+      clicks.sort((a, b) => parseDate(b.date) - parseDate(a.date))
       const lastUpdate = await clickDataCollection.find().toArray()
       const url = req.url
       res.render("click-history", { clicks, lastUpdate, url })
@@ -93,7 +101,9 @@ exports.showAutomation = function (collection, postUrl, pageTitle) {
     if (req.session.isAuthenticated) {
       try {
         // Fetch data from the collection
+
         const clicks = await collection.find().toArray()
+        clicks.sort((a, b) => parseDate(b.date) - parseDate(a.date))
         const lastUpdate = await collection.find().toArray()
         const url = req.url
         res.render("general", { clicks, lastUpdate, url, postUrl, pageTitle })
@@ -267,6 +277,38 @@ exports.crispDataUpdate = function () {
         prevUnresolved: prevUnresolvedFixed,
         prevSameDay: prevSameDayfixed,
         prevAnotherDay: prevAnotherDayFixed
+      })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.addComment = function (collection) {
+  return async function (req, res) {
+    try {
+      const id = req.body.itemId
+      const comment = req.body.comment
+
+      // Find the corresponding document in the database and update it with the new comment
+      await collection.findOneAndUpdate(
+        { _id: id },
+        { $set: { "general.comment": comment } }, // Use $set to update or create the 'general.comment' field
+        { new: true, upsert: true }, // Set upsert to true to create the document if it doesn't exist
+        (err, doc) => {
+          if (err) {
+            console.error("Error:", err)
+            res.status(500).send("Error updating document")
+          } else {
+            console.log("Document updated:", doc)
+            res.status(200).send("Comment added successfully")
+          }
+        }
+      )
+      // Send the updated data as JSON response
+      res.json({
+        success: true
       })
     } catch (error) {
       console.error("Error updating data:", error)

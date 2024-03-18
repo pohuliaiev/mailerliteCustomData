@@ -78,5 +78,5 @@ const getMailerliteCode = async function getMailerliteCode() {
   await authorize()
   return await listMessages()
 }
-getMailerliteCode()
+//getMailerliteCode()
 module.exports = getMailerliteCode
