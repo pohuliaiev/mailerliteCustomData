@@ -1,0 +1,77 @@
+<%- include('header') %>
+<main>
+  <div class="container">
+    <div class="lds-ring d-none" id="preloader">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <h1 class="text-center mt-5 mb-5"><%= pageTitle %></h1>
+
+    <h2 class="text-center">Mailerlite Companio API</h2>
+    <p>Here is this simple API. Endpoints list:
+      <ul class="list-group">
+        <li class="list-group-item"><code>/api/v1/mailerlite/generalMainEn</code> - General main automation English</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/generalMainEs</code> - General main automation Spanish</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/courseEs</code> - Course English</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/courseEn</code> - Course Spanish</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/cleaningBot</code> - Cleaning bot</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/courseEs2</code> - Curso: Cómo Abrir Una Empresa En Estonia</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/crispEn</code> - Crisp ➡️ EN-Subscriber</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/cartAband</code> - Cart Abandonment</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/c1SpainFup</code> - C1 Spain Sales Funnel Follow-Up</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/c1SpainNs</code> - C1 Spain Sales Funnel No-Show</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/pdfEn</code> - PDF-Guide English</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/pdfEs</code> - PDF-Guide Spanish</li>
+        <li class="list-group-item"><code>/api/v1/mailerlite/clickData</code> - Onboarding Survey</li>
+      </ul>
+      
+      <p>Response structure: <br>
+        <code>{ "_id": "65f75eddb37f8e8bf92dffbf", <br>
+          "date": "13.02.2024", <br>
+          "general": { <br>
+            "comment": "They come from the webinar, but Spanish subscribers. I've already added a step in the Spanish webinar automation so the field language is updated.", <br>
+            "open_rate": "48.52%", <br>
+            "click_rate": "3.27%", <br>
+            "total": 6639 <br>
+          } <br>
+        }</code>
+      </p>
+      <p>Or in the latest update we have also <code>opens_count</code> and <code>click_to_open_rate</code> property. 
+        Silvana didn't add them to spreadsheet previously, that's why some objects don't have it. You can check how it looks <a href="/general-en" target="_blank">here</a>.
+        
+      </p>
+      <p>Also in new updated collection documents you can find <code>emails</code> array, but it matters for <a href="/click-history" target="_blank">Onboarding survey</a> only.</p>
+    </p>
+    <p>Some objects have also <code>comment</code> property. But you can ignore them if you want. It's up to you</p>
+   <h3 class="text-center">Onboarding automation</h3>
+   <p>Here we have 3 calculations:
+    <ul>
+     <li>General</li>
+     <li>English</li>
+     <li>Spanish</li>
+    </ul>
+  Response structure: <br>
+  <code>
+    { <br>
+      "_id": "65f23ae34a3f2c0c277ccf1c",<br>
+      "date": "13.03.2024",<br>
+      "general": { "opens_count": 555, "open_rate": "69.55%", "click_rate": "0.75%", "click_to_open_rate": "1.08%", "total": 798, "comment": "Blah blah blah" },<br>
+      "emails": [<br>
+        { "lang": "es", "opens_count": 144, "open_rate": "69.9%", "click_rate": "0%", "click_to_open_rate": "0%" },<br>
+        { "lang": "en", "opens_count": 411, "open_rate": "69.43%", "click_rate": "1.01%", "click_to_open_rate": "0.66%" }<br>
+      ]<br>
+    }
+  </code>
+  </p>
+   
+  </div>
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/script.js"></script>
+</body>
+</html>

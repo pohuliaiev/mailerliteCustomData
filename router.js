@@ -99,4 +99,12 @@ router.post("/login", (req, res) => {
   }
 })
 
+router.get("/api", mainController.apiDocs("API"))
+
+router.get("/api/v1/mailerlite/:collection", async (req, res) => {
+  const collection = req.params.collection
+  const apiController = mainController.apiController(require("./db").db().collection(collection))
+  apiController(req, res)
+})
+
 module.exports = router

@@ -32,6 +32,11 @@ const parseDate = dateStr => {
   return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`)
 }
 
+function sortingCollectionByDate(collection) {
+  collection.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+  return collection
+}
+
 function filterBySite(arr, site) {
   return arr.filter(obj => obj.site === site)
 }
@@ -149,6 +154,30 @@ exports.seoDisplay = function (collection, pageTitle) {
       // Retrieve flash messages and render the login page with messages
       const errorMessages = req.flash("error")
       res.render("login", { errorMessages })
+    }
+  }
+}
+
+exports.apiController = function (collection) {
+  return async function (req, res, next) {
+    try {
+      const data = await collection.find().toArray()
+      res.json(sortingCollectionByDate(data))
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      res.status(500).send("Internal Server Error")
+    }
+  }
+}
+
+exports.apiDocs = function (pageTitle) {
+  return async function (req, res, next) {
+    try {
+      const url = req.url
+      res.render("api", { url, pageTitle })
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      res.status(500).send("Internal Server Error")
     }
   }
 }

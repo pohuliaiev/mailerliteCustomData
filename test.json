@@ -1,0 +1,71 @@
+[
+  {
+    "_id": "65f258be9e1cd04c68f945d8",
+    "date": "14.03.2024",
+    "general": { "opens_count": 555, "open_rate": "69.55%", "click_rate": "0.75%", "click_to_open_rate": "1.08%", "total": 798, "comment": "Testing comments functionality" },
+    "emails": [
+      { "lang": "es", "opens_count": 144, "open_rate": "69.9%", "click_rate": "0%", "click_to_open_rate": "0%" },
+      { "lang": "en", "opens_count": 411, "open_rate": "69.43%", "click_rate": "1.01%", "click_to_open_rate": "0.66%" }
+    ]
+  },
+  {
+    "_id": "65f23ae34a3f2c0c277ccf1c",
+    "date": "13.03.2024",
+    "general": { "opens_count": 555, "open_rate": "69.55%", "click_rate": "0.75%", "click_to_open_rate": "1.08%", "total": 798, "comment": "Blah blah blah" },
+    "emails": [
+      { "lang": "es", "opens_count": 144, "open_rate": "69.9%", "click_rate": "0%", "click_to_open_rate": "0%" },
+      { "lang": "en", "opens_count": 411, "open_rate": "69.43%", "click_rate": "1.01%", "click_to_open_rate": "0.66%" }
+    ]
+  },
+  {
+    "_id": "65ed1bb133c86cb06580a281",
+    "date": "10.03.2024",
+    "general": { "opens_count": 552, "open_rate": "69.52%", "click_rate": "0.76%", "click_to_open_rate": "1.09%" },
+    "emails": [
+      { "lang": "es", "opens_count": 142, "open_rate": "69.61%", "click_rate": "0%", "click_to_open_rate": "0%" },
+      { "lang": "en", "opens_count": 410, "open_rate": "69.49%", "click_rate": "1.02%", "click_to_open_rate": "0.66%" }
+    ]
+  },
+  { "_id": "65f775422c0f3e3d4bbbc4ee", "date": "26.02.2024", "general": { "comment": null, "open_rate": "69.47%", "click_rate": "0.76%", "total": 786 } },
+  { "_id": "65f775422c0f3e3d4bbbc4ed", "date": "19.02.2024", "general": { "comment": null, "open_rate": "69.52%", "click_rate": "0.77%", "total": 784 } },
+  { "_id": "65f775422c0f3e3d4bbbc4ec", "date": "13.02.2024", "general": { "comment": "Another comment test", "open_rate": "69.36%", "click_rate": "0.77%", "total": 780 } },
+  { "_id": "65f775422c0f3e3d4bbbc4eb", "date": "05.02.2024", "general": { "comment": null, "open_rate": "69.47%", "click_rate": "0.78%", "total": 773 } },
+  { "_id": "65f775422c0f3e3d4bbbc4ea", "date": "29.01.2024", "general": { "comment": null, "open_rate": "69.35%", "click_rate": "0.78%", "total": 770 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e9", "date": "23.01.2024", "general": { "comment": null, "open_rate": "69.28%", "click_rate": "0.78%", "total": 765 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e8", "date": "16.01.2024", "general": { "comment": null, "open_rate": "69.17%", "click_rate": "0.79%", "total": 759 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e6", "date": "02.01.2024", "general": { "comment": null, "open_rate": "69.12%", "click_rate": "0.80%", "total": 748 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e7", "date": "01.01.2024", "general": { "comment": null, "open_rate": "69.40%", "click_rate": "0.79%", "total": 755 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e5", "date": "26.12.2023", "general": { "comment": "Is it working again?", "open_rate": "69.17%", "click_rate": "0.80%", "total": 746 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e4", "date": "18.12.2023", "general": { "comment": null, "open_rate": "69.19%", "click_rate": "0.81%", "total": 740 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e3", "date": "11.12.2023", "general": { "comment": null, "open_rate": "69.19%", "click_rate": "0.81%", "total": 740 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e2", "date": "04.12.2023", "general": { "comment": null, "open_rate": "69.19%", "click_rate": "0.81%", "total": 740 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e1", "date": "27.11.2023", "general": { "comment": null, "open_rate": "69.24%", "click_rate": "0.81%", "total": 738 } },
+  { "_id": "65f775422c0f3e3d4bbbc4e0", "date": "21.11.2023", "general": { "comment": null, "open_rate": "69.44%", "click_rate": "0.82%", "total": 733 } },
+  { "_id": "65f775422c0f3e3d4bbbc4df", "date": "13.11.2023", "general": { "comment": null, "open_rate": "69.09%", "click_rate": "0.57%", "total": 702 } },
+  { "_id": "65f775422c0f3e3d4bbbc4de", "date": "06.11.2023", "general": { "comment": null, "open_rate": "69.44%", "click_rate": "0.57%", "total": 697 } },
+  { "_id": "65f775422c0f3e3d4bbbc4dd", "date": "30.10.2023", "general": { "comment": "The open rate is still increasing.", "open_rate": "69.42%", "click_rate": "0.58%", "total": 690 } },
+  { "_id": "65f775422c0f3e3d4bbbc4dc", "date": "23.10.2023", "general": { "comment": null, "open_rate": "69.20%", "click_rate": "0.58%", "total": 685 } },
+  { "_id": "65f775422c0f3e3d4bbbc4db", "date": "17.10.2023", "general": { "comment": null, "open_rate": "69.17%", "click_rate": "0.59%", "total": 678 } },
+  { "_id": "65f775422c0f3e3d4bbbc4da", "date": "11.10.2023", "general": { "comment": "The open rate has increased, so changing the subject was a good idea.", "open_rate": "69.27%", "click_rate": "0.60%", "total": 667 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d9", "date": "02.10.2023", "general": { "comment": null, "open_rate": "68.93%", "click_rate": "0.60%", "total": 663 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d8", "date": "25.09.2023", "general": { "comment": null, "open_rate": "68.85%", "click_rate": "0.61%", "total": 655 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d7", "date": "12.09.2023", "general": { "comment": "It's working again", "open_rate": "69.08%", "click_rate": "0.62%", "total": 650 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d6", "date": "11.09.2023", "general": { "comment": "It's still not working", "open_rate": "69.35%", "click_rate": "0.65%", "total": 620 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d5", "date": "04.09.2023", "general": { "comment": null, "open_rate": "69.35%", "click_rate": "0.65%", "total": 620 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d4", "date": "31.08.2023", "general": { "comment": null, "open_rate": "69.35%", "click_rate": "0.65%", "total": 620 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d3", "date": "24.08.2023", "general": { "comment": null, "open_rate": "69.35%", "click_rate": "0.65%", "total": 620 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d2", "date": "10.08.2023", "general": { "comment": null, "open_rate": "69.19%", "click_rate": "0.65%", "total": 620 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d1", "date": "03.08.2023", "general": { "comment": null, "open_rate": "69.34%", "click_rate": "0.66%", "total": 610 } },
+  { "_id": "65f775422c0f3e3d4bbbc4d0", "date": "27.07.2023", "general": { "comment": null, "open_rate": "69.35%", "click_rate": "0.67%", "total": 597 } },
+  { "_id": "65f775422c0f3e3d4bbbc4cf", "date": "20.07.2023", "general": { "comment": null, "open_rate": "69.26%", "click_rate": "0.68%", "total": 592 } },
+  { "_id": "65f775422c0f3e3d4bbbc4ce", "date": "13.07.2023", "general": { "comment": null, "open_rate": "70.90%", "click_rate": "0.55%", "total": 543 } },
+  { "_id": "65f775422c0f3e3d4bbbc4cd", "date": "06.07.2023", "general": { "comment": null, "open_rate": "72.22%", "click_rate": "0.57%", "total": 522 } },
+  { "_id": "65f775422c0f3e3d4bbbc4cc", "date": "22.06.2023", "general": { "comment": null, "open_rate": "72.27%", "click_rate": "0.59%", "total": 512 } },
+  { "_id": "65f775422c0f3e3d4bbbc4cb", "date": "15.06.2023", "general": { "comment": null, "open_rate": "72.30%", "click_rate": "0.59%", "total": 509 } },
+  { "_id": "65f775422c0f3e3d4bbbc4ca", "date": "07.06.2023", "general": { "comment": null, "open_rate": "72.26%", "click_rate": "0.60%", "total": 501 } },
+  { "_id": "65f775422c0f3e3d4bbbc4c9", "date": "01.06.2023", "general": { "comment": null, "open_rate": "72.49%", "click_rate": "0.60%", "total": 498 } },
+  { "_id": "65f775422c0f3e3d4bbbc4c8", "date": "24.05.2023", "general": { "comment": null, "open_rate": "72.67%", "click_rate": "0.61%", "total": 494 } },
+  { "_id": "65f775422c0f3e3d4bbbc4c7", "date": "11.05.2023", "general": { "comment": null, "open_rate": "72.14%", "click_rate": "0.62%", "total": 481 } },
+  { "_id": "65f775422c0f3e3d4bbbc4c6", "date": "03.05.2023", "general": { "comment": null, "open_rate": "72.09%", "click_rate": "0.63%", "total": 473 } },
+  { "_id": "65f775422c0f3e3d4bbbc4c5", "date": "24.04.2023", "general": { "comment": null, "open_rate": "72.35%", "click_rate": "0.65%", "total": 463 } }
+]
