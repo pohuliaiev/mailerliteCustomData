@@ -5,6 +5,7 @@ const router = express.Router()
 const mainController = require("./controllers/mainController")
 const Login = require("./models/Login")
 const dbCollection = require("./controllers/dbCollections")
+const { parseBanks } = require("./controllers/banks")
 
 const generalMainEnCollection = dbCollection.generalMainEnCollection
 const generalMainEsCollection = dbCollection.generalMainEsCollection
@@ -105,6 +106,22 @@ router.get("/api/v1/mailerlite/:collection", async (req, res) => {
   const collection = req.params.collection
   const apiController = mainController.apiController(require("./db").db().collection(collection))
   apiController(req, res)
+})
+
+router.get("/api/v1/banks/:countryCode", async (req, res) => {
+  const { countryCode } = req.params
+  try {
+    const banksByCountry = await parseBanks()
+    const banksForCountry = banksByCountry[countryCode]
+    if (banksForCountry) {
+      res.json({ countryCode, banks: banksForCountry })
+    } else {
+      res.status(404).json({ error: "Country code not found" })
+    }
+  } catch (error) {
+    console.error("Error fetching banks:", error)
+    res.status(500).json({ error: "Internal Server Error" })
+  }
 })
 
 module.exports = router
