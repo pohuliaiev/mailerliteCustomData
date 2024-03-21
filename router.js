@@ -124,4 +124,19 @@ router.get("/api/v1/banks/:countryCode", async (req, res) => {
   }
 })
 
+router.get("/api/v1/banks/", async (req, res) => {
+  try {
+    const banks = await parseBanks()
+
+    if (banks) {
+      res.json({ banks })
+    } else {
+      res.status(404).json({ error: "Country code not found" })
+    }
+  } catch (error) {
+    console.error("Error fetching banks:", error)
+    res.status(500).json({ error: "Internal Server Error" })
+  }
+})
+
 module.exports = router
