@@ -22,6 +22,7 @@ const pdfEsCollection = dbCollection.pdfEsCollection
 const onboardCollection = dbCollection.onboardCollection
 const clickDataCollection = dbCollection.clickDataCollection
 const seoCollection = dbCollection.seoCollection
+const reviewsCollection = dbCollection.reviewsCollection
 
 // Middleware to check if the user is authenticated
 const isAuthenticated = (req, res, next, view) => {
@@ -85,6 +86,10 @@ router.post("/crisp-update", mainController.crispDataUpdate())
 router.post("/add-comment", mainController.addComment(clickDataCollection))
 
 router.get("/seo", mainController.seoDisplay(seoCollection, "SEO Data"))
+
+router.get("/reviews", mainController.rewievsDisplay(reviewsCollection, "/reviews-update", "Ranking and reviews"))
+
+router.post("/reviews-update", mainController.reviewsUpdate())
 
 router.post("/login", (req, res) => {
   const { password } = req.body

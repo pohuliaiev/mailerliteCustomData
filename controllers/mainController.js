@@ -6,14 +6,17 @@ const surveyCollectionEn = require("../db").db().collection("surveyEn")
 const surveyCollectionEs = require("../db").db().collection("surveyEs")
 const dateCollection = require("../db").db().collection("date")
 const clickDataCollection = require("../db").db().collection("clickData")
+const reviewsCollection = require("../db").db().collection("reviews")
 
 const mailerliteImport = require("../mailerliteImport")
 const Table = require("../models/Table")
 const MailerliteModel = require("../models/Mailerlite")
 const CrispData = require("../models/Crisp")
 const DateRange = require("../models/DateRange")
+const Reviews = require("../models/Reviews")
 const { ObjectId } = require("mongodb")
 const { getSearchAnalyticsData, getPageSpeedScores } = require("../models/Seo")
+//const Test = require("../test")
 
 const formattedCurrentDate = Table.formattedCurrentDate
 
@@ -50,6 +53,7 @@ exports.home = async function (req, res) {
       const clickDate = clickLastUpdate[0].date
       const url = req.url
 
+      //  Test.testUpdate()
       res.render("home", { surveyDate, clickDate, url })
     } catch (error) {
       console.error("Error fetching data:", error)
@@ -146,6 +150,32 @@ exports.seoDisplay = function (collection, pageTitle) {
         const lastUpdate = await collection.find().toArray()
         const url = req.url
         res.render("seo", { companio, one, url, tuempresa, pageTitle })
+      } catch (error) {
+        console.error("Error fetching data:", error)
+        res.status(500).send("Internal Server Error")
+      }
+    } else {
+      // Retrieve flash messages and render the login page with messages
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
+    }
+  }
+}
+
+exports.rewievsDisplay = function (collection, postUrl, pageTitle) {
+  return async function (req, res, next) {
+    if (req.session.isAuthenticated) {
+      try {
+        // Fetch data from the collection
+
+        const reviews = await collection.find().toArray()
+
+        reviews.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+
+        const lastUpdate = reviews[0].date
+
+        const url = req.url
+        res.render("reviews", { reviews, pageTitle, url, postUrl, lastUpdate })
       } catch (error) {
         console.error("Error fetching data:", error)
         res.status(500).send("Internal Server Error")
@@ -285,6 +315,61 @@ exports.automationUpdate = function (collection, id) {
           total: result.dataClicks.total
         },
         emails: result.emails
+      })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.reviewsUpdate = function () {
+  return async function (req, res) {
+    try {
+      const allReviews = await Reviews.getReviews()
+
+      const currentDate = formattedCurrentDate()
+      const lastUpdate = await reviewsCollection.findOne({ date: currentDate })
+
+      const obj = {
+        date: currentDate,
+        trustpilot: {
+          trustRanking: allReviews.ratings.ratingTrustpilot,
+          trustNumber: allReviews.ratings.reviewsTrustpilot
+        },
+        google: {
+          googleRanking: allReviews.ratings.googleRating,
+          googleNumber: allReviews.ratings.googleNumber
+        },
+        eresidence: {
+          eresidenceRanking: allReviews.ratings.ratingEresidence,
+          eresidenceNumber: allReviews.ratings.reviewsEresidence
+        },
+        inforegister: allReviews.ratings.ratingInforegister,
+        ssb: allReviews.ratings.ratingStorybook
+      }
+      if (!lastUpdate) {
+        await Reviews.updateReviews(obj)
+      }
+
+      // Send the updated data as JSON response
+      res.json({
+        success: true,
+        date: currentDate,
+        trustpilot: {
+          trustRanking: allReviews.ratings.ratingTrustpilot,
+          trustNumber: allReviews.ratings.reviewsTrustpilot
+        },
+        google: {
+          googleRanking: allReviews.ratings.googleRating,
+          googleNumber: allReviews.ratings.googleNumber
+        },
+        eresidence: {
+          eresidenceRanking: allReviews.ratings.ratingEresidence,
+          eresidenceNumber: allReviews.ratings.reviewsEresidence
+        },
+        inforegister: allReviews.ratings.ratingInforegister,
+        ssb: allReviews.ratings.ratingStorybook
       })
     } catch (error) {
       console.error("Error updating data:", error)

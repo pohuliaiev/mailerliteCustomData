@@ -27,6 +27,8 @@
     "nodemon": "^3.1.0",
     "public-google-sheets-parser": "^1.5.3",
     "puppeteer": "^22.3.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "validator": "^13.11.0",
     "xlsx": "file:vendor/xlsx-0.20.1.tgz"
   }

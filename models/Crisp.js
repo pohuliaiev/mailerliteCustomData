@@ -65,6 +65,7 @@ async function conversationsArray(agent, first, last) {
             continueLoop = false // Set the flag to false to break out of the loop
             return
           }
+
           resData.forEach(item => {
             allConversations.push(item)
           })
@@ -78,7 +79,34 @@ async function conversationsArray(agent, first, last) {
 
     const resolvedSameDay = resolved.filter(obj => isSameDay(obj.created_at, obj.updated_at))
     const resolvedAnotherDay = resolved.length - resolvedSameDay.length
+    /*
+    const sessionIds = allConversations.map(conversation => conversation.session_id)
 
+    // let scores = []
+
+    const scorePromises = sessionIds.map(async item => {
+      const messageArray = await CrispClient.website.getMessagesInConversation(websiteId, item)
+      const filteredItems = messageArray.filter(m => {
+        // Check if the preview array exists and has objects
+        if (m.preview && m.preview.length > 0) {
+          // Check if any preview object has title equal to 'Website rating'
+          return m.preview.some(previewObj => previewObj.title === "Website rating")
+        }
+        return false // Return false if preview array is empty or undefined
+      })
+      if (filteredItems.length > 0) {
+        const scoreUrl = filteredItems[0].preview[0].url
+        const scoreNum = scoreUrl.charAt(scoreUrl.length - 1)
+        return scoreNum // Return the score value
+      } else {
+        return null // Return null if no score is found
+      }
+    })
+
+    const scores = await Promise.all(scorePromises) // Wait for all promises to resolve
+    console.log(scores.filter(obj => obj !== null))
+
+    */
     return { allConversations, resolved: resolved.length, unresolved: unresolved.length, sameDay: resolvedSameDay.length, anotherDay: resolvedAnotherDay }
   } catch (error) {
     console.error("Error listing conversations:", error)

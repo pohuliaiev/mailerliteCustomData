@@ -321,7 +321,7 @@ function addComment() {
       // Handle the data received from the server
 
       if (data.success) {
-        console.log(data)
+        // console.log(data)
         document.getElementById(itemId).textContent = ""
         document.getElementById(itemId).textContent = comment
         commentModal.hide()

@@ -1,0 +1,90 @@
+<%- include('header') %>
+
+    <main>
+      <div class="container">
+        <div class="lds-ring d-none" id="preloader">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div class="col align-self-end">Last updated: <span id="last-date"> <% if (lastUpdate) { %> <%= lastUpdate %> <% } %></span></div>
+        <div class="d-flex justify-content-center mb-5 mt-3"><button type="button" data-post="<%= postUrl %>" class="btn btn-success automation-update">Update</button></div>
+        <h1 class="text-center"><%= pageTitle %> (Ranking/Number of reviews)</h1>
+
+        <div class="tabs-container mt-3">
+          
+          <% if (reviews) { %>
+            <table class="table table-info table-striped mt-5">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col"><a href="https://www.trustpilot.com/review/companio.co" target="_blank">Trustpilot</a></th>
+                  <th scope="col"><a href="https://www.google.com/maps/place/data=!4m3!3m2!1s0x4692939cf4d06889:0x89e638b15225fc37!12e1?source=g.page.m.dd._&laa=lu-desktop-reviews-dialog-review-solicitation" target="_blank">Google</a></th>
+                  <th scope="col"><a href="https://www.glassdoor.com/Reviews/Companio-Reviews-E7055947.htm" target="_blank">Glassdoor</a></th>
+                  <th scope="col"><a href="https://marketplace.e-resident.gov.ee/company/companio/" target="_blank">E-residence</a></th>
+                  <th scope="col"><a href="https://www.inforegister.ee/en/14522788-COMPANIOESTONIA-OU" target="_blank">Inforegister</a></th>
+                  <th scope="col"><a href="https://ssb.ee/en/14522788-COMPANIOESTONIA-OU/media-storytelling" target="_blank">Score storybook</a></th>
+                </tr>
+              </thead>
+
+              <tbody id="tableGeneral">
+                <% reviews.forEach(item => { %>
+                  <tr>
+                    <td><%= item.date %></td>
+                    <td><strong><%= item.trustpilot.trustRanking %></strong> (<%= item.trustpilot.trustNumber %>) </td>
+                    <td><strong><%= item.google.googleRanking %></strong> (<%= item.google.googleNumber %>)</td>
+                    <td>
+                      <strong><%= item.glassdoor && item.glassdoor.glassRanking ? item.glassdoor.glassRanking : '' %></strong> 
+                      (<%= item.glassdoor && item.glassdoor.glassNumber ? item.glassdoor.glassNumber : '' %>)
+                    </td>
+                    <td><strong><%= item.eresidence.eresidenceRanking %></strong> (<%= item.eresidence.eresidenceNumber %>)</td>
+                    <td><strong><%= item.inforegister %></strong></td>
+                    <td><strong><%= item.ssb %></strong></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          
+          <% } %>
+          
+        </div>
+      </div>
+    </main>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Ooops, something happened, try again</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">...</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="dateModal" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="dateModalLabel">No update avaliable</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">Sorry, but that's all for today. Try tomorrow</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/reviews.js"></script>
+  </body>
+</html>
