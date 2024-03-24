@@ -34,9 +34,11 @@
                     <td><%= item.date %></td>
                     <td><strong><%= item.trustpilot.trustRanking %></strong> (<%= item.trustpilot.trustNumber %>) </td>
                     <td><strong><%= item.google.googleRanking %></strong> (<%= item.google.googleNumber %>)</td>
-                    <td>
-                      <strong><%= item.glassdoor && item.glassdoor.glassRanking ? item.glassdoor.glassRanking : '' %></strong> 
-                      (<%= item.glassdoor && item.glassdoor.glassNumber ? item.glassdoor.glassNumber : '' %>)
+                    <td id="<%= item._id %>"><% if (item.glassdoor && item.glassdoor.glassRanking) { %>
+                      <strong><%= item.glassdoor.glassRanking %></strong> (<%= item.glassdoor && item.glassdoor.glassNumber ? item.glassdoor.glassNumber : '' %>)
+                    <% } else { %>
+                      <%- '<button class="btn btn-info" onclick=commentPopup(this)>Add Glassdoor data</button>' %>
+                    <% } %>
                     </td>
                     <td><strong><%= item.eresidence.eresidenceRanking %></strong> (<%= item.eresidence.eresidenceNumber %>)</td>
                     <td><strong><%= item.inforegister %></strong></td>
@@ -78,6 +80,35 @@
           <div class="modal-body">Sorry, but that's all for today. Try tomorrow</div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="commentModalLabel">Add Glassdoor ranking</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="glassdooralert">
+              
+            </div>
+            
+            <div class="form-floating mb-3">
+              <input type="number" class="form-control" id="glassRating" placeholder="Enter Glassdoor rating">
+              <label for="glassRating">Glassdoor rating</label>
+            </div>
+            <div class="form-floating">
+              <input type="number" class="form-control" id="glassNumber" placeholder="Enter Glassdoor reviews number">
+              <label for="glassNumber">Glassdoor reviews number</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="addGlassdoor()">Add Comment</button>
           </div>
         </div>
       </div>

@@ -91,6 +91,8 @@ router.get("/reviews", mainController.rewievsDisplay(reviewsCollection, "/review
 
 router.post("/reviews-update", mainController.reviewsUpdate())
 
+router.post("/add-glassdoor-ranking", mainController.addGlassdoor(reviewsCollection))
+
 router.post("/login", (req, res) => {
   const { password } = req.body
 

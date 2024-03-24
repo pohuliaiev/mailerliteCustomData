@@ -6,6 +6,10 @@ const dateModal = new bootstrap.Modal("#dateModal", {
   keyboard: false
 })
 
+const commentModal = new bootstrap.Modal("#commentModal", {
+  keyboard: false
+})
+
 const loader = document.getElementById("preloader")
 
 const formattedCurrentDate = function () {
@@ -94,4 +98,63 @@ if (automationUpdateButton) {
     const postUrl = automationUpdateButton.getAttribute("data-post")
     udpateAutomations(postUrl)
   })
+}
+
+//adding glassdoor
+
+function commentPopup(e) {
+  const parent = e.parentNode
+  const id = parent.getAttribute("id")
+  let modal = document.getElementById("commentModal")
+  modal.setAttribute("data-item-id", id)
+
+  commentModal.show()
+}
+
+function addGlassdoor() {
+  const ranking = document.getElementById("glassRating").value
+  const number = document.getElementById("glassNumber").value
+  const rankingTrim = document.getElementById("glassRating").value.trim()
+  const numberTrim = document.getElementById("glassNumber").value.trim()
+
+  const itemId = document.getElementById("commentModal").getAttribute("data-item-id")
+
+  const alertContent = `<div class="alert alert-danger" role="alert" id="glassdooralert">Please add both values!</div>`
+  if (rankingTrim && numberTrim) {
+    axios
+      .post("/add-glassdoor-ranking", {
+        itemId,
+        ranking,
+        number
+      })
+      .then(response => {
+        const data = response.data
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        document.getElementById("glassdooralert").innerHTML = ""
+        // Handle the data received from the server
+
+        if (data.success) {
+          // console.log(data)
+          document.getElementById(itemId).innerHTML = ""
+          document.getElementById(itemId).innerHTML = `<strong>${ranking}</storng> (${number})`
+          commentModal.hide()
+        } else {
+          loader.classList.add("d-none")
+          fadeOverlay.style.display = "none"
+          commentModal.hide()
+          myModal.show()
+          console.error("Server error:", data.error)
+        }
+      })
+      .catch(error => {
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        commentModal.hide()
+        myModal.show()
+        console.error("Axios error:", error)
+      })
+  } else {
+    document.getElementById("glassdooralert").innerHTML = alertContent
+  }
 }

@@ -482,3 +482,28 @@ exports.addComment = function (collection) {
     }
   }
 }
+
+exports.addGlassdoor = function (collection) {
+  return async function (req, res) {
+    try {
+      const id = req.body.itemId
+      const objectId = new ObjectId(id)
+      const ranking = req.body.ranking
+      const number = req.body.number
+
+      // Check if the document exists
+      const existingDoc = await collection.findOne({ _id: objectId })
+      if (!existingDoc) {
+        console.log("404")
+      }
+
+      // Update the document
+      const updatedDoc = await collection.findOneAndUpdate({ _id: objectId }, { $set: { "glassdoor.glassRanking": ranking, "glassdoor.glassNumber": number } }, { new: true })
+
+      res.json({ success: true, updatedDoc })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
