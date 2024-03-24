@@ -235,17 +235,20 @@ function udpateAutomations(url) {
             const tdDate = document.createElement("td")
             const tdOpenCount = document.createElement("td")
             const tdTotal = document.createElement("td")
+            const tdComment = document.createElement("td")
             tdDate.textContent = date
             tdTotal.textContent = obj.total
             tdClickRate.textContent = obj.click_rate
             tdClickToOpenRate.textContent = obj.click_to_open_rate
             tdOpenCount.textContent = `${obj.opens_count} (${obj.open_rate})`
+            tdComment.textContent = ""
             row.appendChild(tdDate)
             row.appendChild(tdTotal)
             row.appendChild(tdOpenCount)
             row.appendChild(tdClickRate)
             row.appendChild(tdClickToOpenRate)
-            tableDiv.appendChild(row)
+            row.appendChild(tdComment)
+            tableDiv.insertBefore(row, tableDiv.firstChild)
           }
 
           updateTable(data.general, tGeneral, data.date)
