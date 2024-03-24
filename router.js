@@ -60,7 +60,7 @@ router.post("/cleaning-bot-update", mainController.automationUpdate(cleaningBotC
 router.get("/course-es-2", mainController.showAutomation(courseEs2Collection, "/update-course-es-2", "Curso: Cómo Abrir Una Empresa En Estonia"))
 router.post("/update-course-es-2", mainController.automationUpdate(courseEs2Collection, process.env.CRSES2))
 
-router.get("/crisp-en-automation", mainController.showAutomation(crispEnCollection, "/update-crisp-en-automation", "Crisp ➡️ EN-Subscriber"))
+router.get("/crisp-en-automation", mainController.showCrispAutomation(crispEnCollection, "/update-crisp-en-automation", "Crisp ➡️ EN-Subscriber"))
 router.post("/update-crisp-en-automation", mainController.automationUpdate(crispEnCollection, process.env.CRSPEN))
 
 router.get("/cart-aband", mainController.showAutomation(cartAbandCollection, "/update-cart-aband", "Cart Abandonment"))

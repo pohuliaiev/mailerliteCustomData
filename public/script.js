@@ -223,7 +223,7 @@ function udpateAutomations(url) {
 
         if (data.success) {
           console.log(data)
-
+          automationUpdateButton.classList.add("disabled")
           const tGeneral = document.getElementById("tableGeneral")
 
           document.getElementById("last-date").textContent = data.date
@@ -270,6 +270,60 @@ function udpateAutomations(url) {
   }
 }
 
+function udpateCrispAutomation(url) {
+  if (lastDateValue !== formattedCurrentDate()) {
+    loader.classList.remove("d-none")
+    fadeOverlay.style.display = "block"
+    axios
+      .post(url)
+      .then(response => {
+        const data = response.data
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        // Handle the data received from the server
+
+        if (data.success) {
+          console.log(data)
+          automationUpdateCrispButton.classList.add("disabled")
+          const tGeneral = document.getElementById("tableGeneral")
+
+          document.getElementById("last-date").textContent = data.date
+          // Access data.tableDataEs and data.tableDataEn here
+          function updateTable(obj, tableDiv, date) {
+            const row = document.createElement("tr")
+
+            const tdDate = document.createElement("td")
+
+            const tdTotal = document.createElement("td")
+            const tdComment = document.createElement("td")
+            tdDate.textContent = date
+            tdTotal.textContent = obj.total
+            tdComment.textContent = ""
+            row.appendChild(tdDate)
+            row.appendChild(tdTotal)
+            row.appendChild(tdComment)
+            tableDiv.insertBefore(row, tableDiv.firstChild)
+          }
+
+          updateTable(data.general, tGeneral, data.date)
+        } else {
+          loader.classList.add("d-none")
+          fadeOverlay.style.display = "none"
+          myModal.show()
+          console.error("Server error:", data.error)
+        }
+      })
+      .catch(error => {
+        loader.classList.add("d-none")
+        fadeOverlay.style.display = "none"
+        myModal.show()
+        console.error("Axios error:", error)
+      })
+  } else {
+    dateModal.show()
+  }
+}
+
 // Get the button element by its ID
 const myButton = document.getElementById("click-me")
 const clickUpdate = document.getElementById("update-clicks")
@@ -277,6 +331,9 @@ const automationUpdate = document.getElementById("update-general-en")
 
 const automationsClass = document.getElementsByClassName("automation-update")
 const automationUpdateButton = document.getElementsByClassName("automation-update")[0]
+
+const automationsCrispClass = document.getElementsByClassName("automation-update-crisp")
+const automationUpdateCrispButton = document.getElementsByClassName("automation-update-crisp")[0]
 
 // Attach the onclick event handler to the button
 
@@ -294,6 +351,13 @@ if (automationUpdateButton) {
   automationUpdateButton.onclick = function () {
     const postUrl = automationUpdateButton.getAttribute("data-post")
     udpateAutomations(postUrl)
+  }
+}
+
+if (automationUpdateCrispButton) {
+  automationUpdateCrispButton.onclick = function () {
+    const postUrl = automationUpdateCrispButton.getAttribute("data-post")
+    udpateCrispAutomation(postUrl)
   }
 }
 

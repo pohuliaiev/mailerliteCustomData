@@ -119,9 +119,32 @@ exports.showAutomation = function (collection, postUrl, pageTitle) {
 
         const clicks = await collection.find().toArray()
         clicks.sort((a, b) => parseDate(b.date) - parseDate(a.date))
-        const lastUpdate = await collection.find().toArray()
+        const lastUpdate = clicks
         const url = req.url
         res.render("general", { clicks, lastUpdate, url, postUrl, pageTitle })
+      } catch (error) {
+        console.error("Error fetching data:", error)
+        res.status(500).send("Internal Server Error")
+      }
+    } else {
+      // Retrieve flash messages and render the login page with messages
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
+    }
+  }
+}
+
+exports.showCrispAutomation = function (collection, postUrl, pageTitle) {
+  return async function (req, res, next) {
+    if (req.session.isAuthenticated) {
+      try {
+        // Fetch data from the collection
+
+        const clicks = await collection.find().toArray()
+        clicks.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+        const lastUpdate = clicks
+        const url = req.url
+        res.render("crisp-automation", { clicks, lastUpdate, url, postUrl, pageTitle })
       } catch (error) {
         console.error("Error fetching data:", error)
         res.status(500).send("Internal Server Error")

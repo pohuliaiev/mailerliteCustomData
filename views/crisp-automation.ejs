@@ -9,7 +9,7 @@
           <div></div>
         </div>
         <div class="col align-self-end"><a href="/mailerlite"><i class="bi bi-arrow-left"></i>Back to automation list</a> Last updated: <span id="last-date"> <% if (clicks.length !== 0) { %> <%= clicks[0].date %> <% } %></span></div>
-        <div class="d-flex justify-content-center mb-5 mt-3"><button type="button" data-post="<%= postUrl %>" class="btn btn-success automation-update">Update</button></div>
+        <div class="d-flex justify-content-center mb-5 mt-3"><button type="button" data-post="<%= postUrl %>" class="btn btn-success automation-update-crisp">Update</button></div>
         <h1 class="text-center"><%= pageTitle %></h1>
 
         <div class="tabs-container mt-3">
@@ -19,11 +19,8 @@
               <thead>
                 <tr>
                   <th scope="col">Date</th>
-                  <th scope="col">Sent</th>
-                  <th scope="col">Opened (%)</th>
-                  <th scope="col">Clicked</th>
-                  <th scope="col">Click to open rate</th>
-                  <th scope="col" width="20%">Comment</th>
+                  <th scope="col">Completed subscribers count</th>
+                  <th scope="col">Comment</th>
                 </tr>
               </thead>
 
@@ -32,10 +29,7 @@
                   <tr>
                     <td><%= item.date %></td>
                     <td><%= item.general.total %></td>
-                    <td><%= item.general.opens_count %> (<%= item.general.open_rate %>)</td>
-                    <td><%= item.general.click_rate %></td>
-                    <td><%= item.general.click_to_open_rate %></td>
-                    <td width="20%"><%= item.general.comment %></td>
+                    <td><%= item.general.comment %></td>
                   </tr>
                 <% }); %>
               </tbody>
