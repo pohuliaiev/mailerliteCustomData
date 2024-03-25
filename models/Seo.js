@@ -60,9 +60,8 @@ async function getPageSpeedScores(url) {
       }
     })
 
-    const desktopScore = desktopResponse.data.lighthouseResult.categories.performance.score
-    const mobileScore = mobileResponse.data.lighthouseResult.categories.performance.score
-    console.log(desktopScore, mobileScore)
+    const desktopScore = desktopResponse.data.lighthouseResult.categories.performance.score * 100
+    const mobileScore = mobileResponse.data.lighthouseResult.categories.performance.score * 100
     return { desktopScore, mobileScore }
   } catch (error) {
     console.error("Error fetching PageSpeed scores:", error.response.data)
@@ -70,4 +69,19 @@ async function getPageSpeedScores(url) {
   }
 }
 
-module.exports = { getSearchAnalyticsData, getPageSpeedScores }
+async function returnSeoValues(url, start, end) {
+  const searchData = await getSearchAnalyticsData(url, start, end)
+  const speed = await getPageSpeedScores(`https://${url}`)
+  const mobileSpeed = speed.mobileScore
+  const desktopSpeed = speed.desktopScore
+  return {
+    site: url,
+    mobile: mobileSpeed,
+    desktop: desktopSpeed,
+    clicks: searchData.rows[0].clicks,
+    impressions: searchData.rows[0].impressions,
+    ctr: searchData.rows[0].ctr,
+    position: searchData.rows[0].position
+  }
+}
+module.exports = returnSeoValues

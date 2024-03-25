@@ -91,6 +91,12 @@ router.get("/reviews", mainController.rewievsDisplay(reviewsCollection, "/review
 
 router.post("/reviews-update", mainController.reviewsUpdate())
 
+router.post("/seo-update-companio", mainController.SeoUpdate("companio.co"))
+
+router.post("/seo-update-one", mainController.SeoUpdate("one.companio.co"))
+
+router.post("/seo-update-empresa", mainController.SeoUpdate("tuempresaenestonia.com"))
+
 router.post("/add-glassdoor-ranking", mainController.addGlassdoor(reviewsCollection))
 
 router.post("/login", (req, res) => {

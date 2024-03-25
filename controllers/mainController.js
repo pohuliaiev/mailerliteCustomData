@@ -7,6 +7,7 @@ const surveyCollectionEs = require("../db").db().collection("surveyEs")
 const dateCollection = require("../db").db().collection("date")
 const clickDataCollection = require("../db").db().collection("clickData")
 const reviewsCollection = require("../db").db().collection("reviews")
+const seoCollection = require("../db").db().collection("seo")
 
 const mailerliteImport = require("../mailerliteImport")
 const Table = require("../models/Table")
@@ -15,7 +16,7 @@ const CrispData = require("../models/Crisp")
 const DateRange = require("../models/DateRange")
 const Reviews = require("../models/Reviews")
 const { ObjectId } = require("mongodb")
-const { getSearchAnalyticsData, getPageSpeedScores } = require("../models/Seo")
+const returnSeoValues = require("../models/Seo")
 //const Test = require("../test")
 
 const formattedCurrentDate = Table.formattedCurrentDate
@@ -24,10 +25,9 @@ const tableUpdateTemplate = Table.tableUpdateTemplate
 
 const surveyUpdateTemplate = Table.surveyUpdateTemplate
 
-function flashMessagesMiddleware(req, res, next) {
-  res.locals.errorMessages = req.flash("error")
-  res.locals.successMessages = req.flash("success")
-  next()
+function formatDate(dateString) {
+  const [day, month, year] = dateString.split(".")
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`
 }
 
 const parseDate = dateStr => {
@@ -170,9 +170,12 @@ exports.seoDisplay = function (collection, pageTitle) {
         companio.sort((a, b) => parseDate(b.date) - parseDate(a.date))
         one.sort((a, b) => parseDate(b.date) - parseDate(a.date))
         tuempresa.sort((a, b) => parseDate(b.date) - parseDate(a.date))
-        const lastUpdate = await collection.find().toArray()
+
+        const lastUpdateCompanio = companio[0].date
+        const lastUpdateOne = one[0].date
+        const lastUpdateTuempresa = tuempresa[0].date
         const url = req.url
-        res.render("seo", { companio, one, url, tuempresa, pageTitle })
+        res.render("seo", { companio, one, url, tuempresa, pageTitle, lastUpdateCompanio, lastUpdateOne, lastUpdateTuempresa })
       } catch (error) {
         console.error("Error fetching data:", error)
         res.status(500).send("Internal Server Error")
@@ -394,6 +397,33 @@ exports.reviewsUpdate = function () {
         inforegister: allReviews.ratings.ratingInforegister,
         ssb: allReviews.ratings.ratingStorybook
       })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.SeoUpdate = function (url) {
+  return async function (req, res) {
+    try {
+      const seoTable = await seoCollection.find({ site: url }).toArray()
+      seoTable.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+      const startDateNonFormated = seoTable[0].date
+      const endDateNonFormated = formattedCurrentDate()
+      const startDate = formatDate(startDateNonFormated)
+      const endDate = formatDate(endDateNonFormated)
+      console.log(startDate, endDate)
+
+      const data = await returnSeoValues(url, startDate, endDate)
+      // Send the updated data as JSON response
+      res.json({
+        success: true,
+        date: endDateNonFormated,
+        data
+      })
+
+      await seoCollection.insertOne({ date: formattedCurrentDate(), site: url, clicks: data.clicks, impressions: data.impressions, ctr: data.ctr, position: data.position, mobile: data.mobile, desktop: data.desktop })
     } catch (error) {
       console.error("Error updating data:", error)
       res.status(500).json({ success: false, error: "Internal Server Error" })

@@ -7,7 +7,13 @@
           <div></div>
           <div></div>
         </div>
-        <div class="d-flex justify-content-center mb-5 mt-3"><button type="button" class="btn btn-success seo-update">Update</button></div>
+        <div class="col align-self-end">Last Companio update: <span id="last-date-companio-table"> <%= lastUpdateCompanio %> </span></div>
+        <div class="col align-self-end">Last One update: <span id="last-date-table-one">  <%= lastUpdateOne %> </span></div>
+        <div class="col align-self-end">Last Tuempresa update: <span id="last-date-table-empresa">  <%= lastUpdateTuempresa %> </span></div>
+        <div class="d-flex justify-content-center mb-5 mt-3" style="gap: 20px">
+          <button type="button" class="btn btn-success" id="update-companio" data-table="companio-table" data-post="/seo-update-companio">Update Companio</button> 
+          <button type="button" class="btn btn-success" id="update-one" data-table="table-one" data-post="/seo-update-one">Update One</button> 
+          <button type="button" class="btn btn-success" id="update-tuempresa" data-table="table-empresa" data-post="/seo-update-empresa">Update Tuempresa</button></div>
         <h1 class="text-center"><%= pageTitle %></h1>
 
         <div class="tabs-container mt-3">
@@ -45,7 +51,7 @@
                   </tr>
                 </thead>
   
-                <tbody>
+                <tbody id="companio-table">
                   <% companio.forEach(item => { %>
                     <tr>
                       <td width="5%"><%= item.date %></td>
@@ -72,7 +78,7 @@
         
             
             <div class="tab-pane fade" id="one" role="tabpanel" aria-labelledby="one" tabindex="0">
-              <table class="table table-info table-striped mt-5" style="font-size: 14px">
+              <table class="table table-info table-striped mt-5" style="font-size: 14px" >
                 <thead>
                   <tr>
                     <th scope="col" width="5%">Date</th>
@@ -88,7 +94,7 @@
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="table-one">
                   
                  
                     
@@ -116,7 +122,7 @@
             </div>
 
             <div class="tab-pane fade" id="empresa" role="tabpanel" aria-labelledby="empresa" tabindex="0">
-              <table class="table table-info table-striped mt-5" style="font-size: 14px">
+              <table class="table table-info table-striped mt-5" style="font-size: 14px" >
                 <thead>
                   <tr>
                     <th scope="col" width="5%">Date</th>
@@ -132,7 +138,7 @@
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="table-empresa">
                   
                  
                     
@@ -197,7 +203,7 @@
             <h1 class="modal-title fs-5" id="dateModalLabel">No update avaliable</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">Sorry, but that's all for today. Try tomorrow</div>
+          <div class="modal-body">Sorry, but update is allowed only once per week. The next time is <span id="next-update"></span></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
@@ -207,6 +213,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="/script.js"></script>
+    <script src="/seo-front.js"></script>
   </body>
 </html>
