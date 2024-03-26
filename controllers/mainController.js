@@ -238,6 +238,18 @@ exports.apiDocs = function (pageTitle) {
   }
 }
 
+exports.config = function (pageTitle) {
+  return async function (req, res, next) {
+    try {
+      const url = req.url
+      res.render("config", { url, pageTitle })
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      res.status(500).send("Internal Server Error")
+    }
+  }
+}
+
 exports.showMailerlitePage = function (pageTitle) {
   return async function (req, res, next) {
     if (req.session.isAuthenticated) {

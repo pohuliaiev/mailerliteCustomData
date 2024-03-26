@@ -87,6 +87,8 @@ router.post("/add-comment", mainController.addComment(clickDataCollection))
 
 router.get("/seo", mainController.seoDisplay(seoCollection, "SEO Data"))
 
+router.get("/config", mainController.config("Config"))
+
 router.get("/reviews", mainController.rewievsDisplay(reviewsCollection, "/reviews-update", "Ranking and reviews"))
 
 router.post("/reviews-update", mainController.reviewsUpdate())
