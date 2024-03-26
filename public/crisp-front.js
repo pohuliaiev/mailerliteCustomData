@@ -45,6 +45,7 @@ flatpickr("#calendar", {
     if (selectedDates.length === 2) {
       rangeSelected = true
     }
+    //   console.log(firstSelectedDate, secondSelectedDate)
   }
 })
 
@@ -78,6 +79,12 @@ function udpateCrisp(url) {
           document.getElementById("solved").textContent = data.resolved
           document.getElementById("same_day").textContent = data.sameDay
           document.getElementById("another_day").textContent = data.anotherDay
+
+          document.getElementById("5_stars").textContent = data.ratings.stars_5
+          document.getElementById("4_stars").textContent = data.ratings.stars_4
+          document.getElementById("3_stars").textContent = data.ratings.stars_3
+          document.getElementById("2_stars").textContent = data.ratings.stars_2
+          document.getElementById("1_stars").textContent = data.ratings.stars_1
 
           updateElementWithPercentage("total_conversations_prev", data.prevConversations)
           updateElementWithPercentage("not_solved_prev", data.prevUnresolved)

@@ -82,3 +82,7 @@
 #errorMessage:not(.d-none) {
   opacity: 1;
 }
+
+.bi-star-fill {
+  color: #f9ff00;
+}

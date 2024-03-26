@@ -46,75 +46,134 @@ async function conversationsArray(agent, first, last) {
     const date2 = new Date(timestamp2)
     return date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear()
   }
+
   const pageSize = 1000
   let allConversations = []
+
   let continueLoop = true
 
   try {
-    for (let currentPage = 0; currentPage < pageSize && continueLoop; currentPage++) {
+    let currentPage = 0
+    while (continueLoop) {
       const apiUrl = `https://api.crisp.chat/v1/website/${websiteId}/conversations/${currentPage}/?filter_assigned=${agent}&filter_date_start=${first}&filter_date_end=${last}`
-      await axios({
-        method: "get",
-        url: apiUrl,
-        headers: headers
+      const response = await axios.get(apiUrl, { headers })
+
+      const resData = response.data.data
+
+      if (resData.length === 0) {
+        continueLoop = false
+        break
+      }
+
+      resData.forEach(item => {
+        allConversations.push(item)
       })
-        .then(response => {
-          const resData = response.data.data
 
-          if (resData.length === 0) {
-            continueLoop = false // Set the flag to false to break out of the loop
-            return
-          }
-
-          resData.forEach(item => {
-            allConversations.push(item)
-          })
-        })
-        .catch(error => {
-          console.error(error)
-        })
+      currentPage++
     }
-    const resolved = allConversations.filter(obj => obj.state === "resolved")
-    const unresolved = allConversations.filter(obj => obj.state === "unresolved")
+    function removeDuplicates(arr) {
+      return arr.filter((item, index, self) => {
+        return (
+          index ===
+          self.findIndex(
+            obj => obj.created_at === item.created_at // assuming each object has an 'id' property
+          )
+        )
+      })
+    }
+    const uniqueArray = removeDuplicates(allConversations)
+
+    const resolved = uniqueArray.filter(obj => obj.state === "resolved")
+    const unresolved = uniqueArray.filter(obj => obj.state === "unresolved")
 
     const resolvedSameDay = resolved.filter(obj => isSameDay(obj.created_at, obj.updated_at))
     const resolvedAnotherDay = resolved.length - resolvedSameDay.length
-    /*
-    const sessionIds = allConversations.map(conversation => conversation.session_id)
 
-    // let scores = []
+    return { uniqueArray, resolved: resolved.length, unresolved: unresolved.length, sameDay: resolvedSameDay.length, anotherDay: resolvedAnotherDay }
+  } catch (error) {
+    console.error("Error listing conversations:", error)
+    throw error
+  }
+}
 
-    const scorePromises = sessionIds.map(async item => {
-      const messageArray = await CrispClient.website.getMessagesInConversation(websiteId, item)
-      const filteredItems = messageArray.filter(m => {
-        // Check if the preview array exists and has objects
-        if (m.preview && m.preview.length > 0) {
-          // Check if any preview object has title equal to 'Website rating'
-          return m.preview.some(previewObj => previewObj.title === "Website rating")
+async function ratingsObj(agent, first, last) {
+  let allRatings = []
+  const tokenRatings = Buffer.from(`${process.env.CRISPUSERID}:${process.env.CRISPUSERKEY}`, "utf-8").toString("base64")
+  const headersRatings = {
+    Authorization: `Basic ${tokenRatings}`,
+    "X-Crisp-Tier": "user"
+  }
+  let continueLoop = true
+  const pageSize = 10
+  try {
+    let ratings = {
+      stars_5: 0,
+      stars_4: 0,
+      stars_3: 0,
+      stars_2: 0,
+      stars_1: 0
+    }
+
+    for (let currentPage = 0; currentPage < pageSize && continueLoop; currentPage++) {
+      const ratingsApiUrl = `https://api.crisp.chat/v1/website/${websiteId}/rating/sessions/list/${currentPage}?filter_date_start=${first}&filter_date_end=${last}`
+      const response = await axios.get(ratingsApiUrl, { headers: headersRatings })
+      const ratingsAllDataArr = response.data.data
+
+      if (ratingsAllDataArr.length === 0) {
+        continueLoop = false // Set the flag to false to break out of the loop
+        break // Exit the loop
+      }
+
+      const operatorRatingsSession = ratingsAllDataArr.filter(obj => {
+        if (obj.session && obj.session.assigned) {
+          return obj.session.assigned.user_id === agent
         }
-        return false // Return false if preview array is empty or undefined
+        return false
       })
-      if (filteredItems.length > 0) {
-        const scoreUrl = filteredItems[0].preview[0].url
-        const scoreNum = scoreUrl.charAt(scoreUrl.length - 1)
-        return scoreNum // Return the score value
-      } else {
-        return null // Return null if no score is found
+
+      operatorRatingsSession.forEach(item => {
+        allRatings.push(item)
+      })
+    }
+    function removeDuplicates(arr) {
+      return arr.filter((item, index, self) => {
+        return (
+          index ===
+          self.findIndex(
+            obj => obj.session.session_id === item.session.session_id // assuming each object has an 'id' property
+          )
+        )
+      })
+    }
+
+    const operatorRatingsSessionWithoutDoubles = removeDuplicates(allRatings)
+
+    operatorRatingsSessionWithoutDoubles.forEach(item => {
+      switch (item.stars) {
+        case 5:
+          ratings.stars_5 += 1
+          break
+        case 4:
+          ratings.stars_4 += 1
+          break
+        case 3:
+          ratings.stars_3 += 1
+          break
+        case 2:
+          ratings.stars_2 += 1
+          break
+        case 1:
+          ratings.stars_1 += 1
+          break
       }
     })
-
-    const scores = await Promise.all(scorePromises) // Wait for all promises to resolve
-    console.log(scores.filter(obj => obj !== null))
-
-    */
-    return { allConversations, resolved: resolved.length, unresolved: unresolved.length, sameDay: resolvedSameDay.length, anotherDay: resolvedAnotherDay }
+    return ratings
   } catch (error) {
     console.error("Error listing conversations:", error)
     throw error // Throw the error to be caught by the caller
   }
 }
 
-exports.agents = agentsArray()
-exports.conversations = function (agent, first, last) {
-  return conversationsArray(agent, first, last)
-}
+exports.agents = agentsArray
+exports.conversations = conversationsArray
+exports.ratings = ratingsObj

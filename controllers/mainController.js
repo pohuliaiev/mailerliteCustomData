@@ -436,7 +436,7 @@ exports.crispPage = function (pageTitle) {
     if (req.session.isAuthenticated) {
       try {
         const url = req.url
-        const agents = await CrispData.agents
+        const agents = await CrispData.agents()
         res.render("crisp", { url, pageTitle, agents })
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -456,10 +456,10 @@ exports.crispDataUpdate = function () {
       const agentId = req.body.id
       const startDate = req.body.start_date
       const endDate = req.body.end_date
-      const conversations = await CrispData.conversations(agentId, startDate, endDate)
+      const [conversations, ratings] = await Promise.all([CrispData.conversations(agentId, startDate, endDate), CrispData.ratings(agentId, startDate, endDate)])
       const [previousStartDate, previousEndDate] = DateRange.getPreviousPeriod(startDate, endDate)
       const prevConversations = await CrispData.conversations(agentId, previousStartDate, previousEndDate)
-      const prevConversationsFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.allConversations.length, conversations.allConversations.length).toFixed(2))
+      const prevConversationsFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.uniqueArray.length, conversations.uniqueArray.length).toFixed(2))
       const prevResolvedFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.resolved, conversations.resolved).toFixed(2))
       const prevUnresolvedFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.unresolved, conversations.unresolved).toFixed(2))
       const prevSameDayfixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.sameDay, conversations.sameDay).toFixed(2))
@@ -467,12 +467,13 @@ exports.crispDataUpdate = function () {
 
       res.json({
         success: true,
-        periodConversations: conversations.allConversations.length,
-        conversations: conversations.allConversations,
+        periodConversations: conversations.uniqueArray.length,
+        conversations: conversations.uniqueArray,
         resolved: conversations.resolved,
         unresolved: conversations.unresolved,
         sameDay: conversations.sameDay,
         anotherDay: conversations.anotherDay,
+        ratings,
         prevConversations: prevConversationsFixed,
         prevResolved: prevResolvedFixed,
         prevUnresolved: prevUnresolvedFixed,
