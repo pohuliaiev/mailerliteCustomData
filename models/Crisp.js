@@ -58,7 +58,6 @@ async function conversationsArray(agent, first, last) {
     if (agent !== "0") {
       filterAssigned = `filter_assigned=${agent}&`
     }
-    console.log(filterAssigned)
     while (continueLoop) {
       const apiUrl = `https://api.crisp.chat/v1/website/${websiteId}/conversations/${currentPage}/?${filterAssigned}filter_date_start=${first}&filter_date_end=${last}`
       const response = await axios.get(apiUrl, { headers })
@@ -129,13 +128,15 @@ async function ratingsObj(agent, first, last) {
         break // Exit the loop
       }
 
-      const operatorRatingsSession = ratingsAllDataArr.filter(obj => {
-        if (obj.session && obj.session.assigned) {
-          return obj.session.assigned.user_id === agent
-        }
-        return false
-      })
-
+      let operatorRatingsSession = response.data.data
+      if (agent !== "0") {
+        operatorRatingsSession = ratingsAllDataArr.filter(obj => {
+          if (obj.session && obj.session.assigned) {
+            return obj.session.assigned.user_id === agent
+          }
+          return false
+        })
+      }
       operatorRatingsSession.forEach(item => {
         allRatings.push(item)
       })
