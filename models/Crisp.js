@@ -54,8 +54,13 @@ async function conversationsArray(agent, first, last) {
 
   try {
     let currentPage = 0
+    let filterAssigned = ``
+    if (agent !== "0") {
+      filterAssigned = `filter_assigned=${agent}&`
+    }
+    console.log(filterAssigned)
     while (continueLoop) {
-      const apiUrl = `https://api.crisp.chat/v1/website/${websiteId}/conversations/${currentPage}/?filter_assigned=${agent}&filter_date_start=${first}&filter_date_end=${last}`
+      const apiUrl = `https://api.crisp.chat/v1/website/${websiteId}/conversations/${currentPage}/?${filterAssigned}filter_date_start=${first}&filter_date_end=${last}`
       const response = await axios.get(apiUrl, { headers })
 
       const resData = response.data.data
@@ -76,7 +81,7 @@ async function conversationsArray(agent, first, last) {
         return (
           index ===
           self.findIndex(
-            obj => obj.created_at === item.created_at // assuming each object has an 'id' property
+            obj => obj.session_id === item.session_id // assuming each object has an 'id' property
           )
         )
       })

@@ -53,11 +53,14 @@ function udpateCrisp(url) {
   loader.classList.remove("d-none")
   fadeOverlay.style.display = "block"
   const selectElement = document.getElementById("agents")
-  const agent = selectElement.value
+  let agent = ""
+  if (agent !== 0) {
+    agent = selectElement.value
+  }
   const selectedIndex = selectElement.selectedIndex
   const selectedOption = selectElement.options[selectedIndex]
   const agentName = selectedOption.textContent
-  if (rangeSelected && agent !== 0) {
+  if (rangeSelected) {
     const postData = {
       id: agent,
       start_date: firstDate,

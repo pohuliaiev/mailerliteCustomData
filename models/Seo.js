@@ -33,7 +33,7 @@ async function getSearchAnalyticsData(siteUrl, startDate, endDate) {
         endDate: endDate
       }
     })
-
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.error("Error querying search analytics data:", error)
@@ -84,4 +84,38 @@ async function returnSeoValues(url, start, end) {
     position: searchData.rows[0].position
   }
 }
+
+//cornerstone articles
+async function getTopPages(siteUrl, startDate, endDate) {
+  try {
+    // Get a new access token using the refresh token
+    const { token } = await oAuth2Client.getAccessToken()
+
+    // Make requests to the Search Console API using the authenticated client
+    const webmasters = google.webmasters({
+      version: "v3",
+      auth: oAuth2Client
+    })
+
+    // Query search analytics data with 'byPage' aggregation
+    const response = await webmasters.searchanalytics.query({
+      siteUrl: `sc-domain:${siteUrl}`,
+      requestBody: {
+        startDate: startDate,
+        endDate: endDate,
+        dimensions: ["page"], // Aggregate data by page
+        aggregationType: "byPage" // Aggregate by individual page
+      }
+    })
+    const filteredRows = response.data.rows.filter(row => !row.keys.includes(`https://${siteUrl}/`))
+    const sorted = filteredRows.sort((a, b) => b.clicks - a.clicks)
+    const topPages = sorted.slice(0, 5)
+
+    return response.data
+  } catch (error) {
+    console.error("Error querying search analytics data:", error)
+    throw error
+  }
+}
+
 module.exports = returnSeoValues
