@@ -121,7 +121,22 @@ async function getTopPages(siteUrl, startDate, endDate) {
     const sorted = filteredRows.sort((a, b) => b.clicks - a.clicks)
     const topPages = sorted.slice(0, 5)
 
-    return topPages
+    const excludedPrefixes = [`https://${process.env.SITEURL2}/es/blog/`, `https://${process.env.SITEURL}/es/blog/`, `https://${process.env.SITEURL3}/es/article/`]
+
+    const filteredEn = filteredRows.filter(item => {
+      const url = item.keys[0]
+      return !excludedPrefixes.some(prefix => url.startsWith(prefix))
+    })
+    const sortedEn = filteredEn.sort((a, b) => b.clicks - a.clicks)
+    const topEn = sortedEn.slice(0, 5)
+
+    const filteredEs = filteredRows.filter(item => {
+      const url = item.keys[0]
+      return excludedPrefixes.some(prefix => url.startsWith(prefix))
+    })
+    const sortedEs = filteredEs.sort((a, b) => b.clicks - a.clicks)
+    const topEs = sortedEs.slice(0, 5)
+    return { topPages, topEn, topEs }
   } catch (error) {
     console.error("Error querying search analytics data:", error)
     throw error
@@ -189,32 +204,71 @@ async function getHelpDeskArticles(lang, url) {
 }
 
 async function getTopPagesWithTitles(siteUrl, startDate, endDate) {
-  let pagesArr = []
   try {
+    let pagesArr = []
     const pages = await getTopPages(siteUrl, startDate, endDate)
-    const promises = pages.map(async item => {
-      const url = item.keys[0]
-      const slug = extractSlugFromUrl(url)
-      let title = await getPostTitleBySlug(siteUrl, slug)
-      if (url.includes("one.companio.co")) {
-        title = await getPostTitleBySlug("one.companio.co/es", slug)
-      } else if (url.includes("help.companio.co")) {
-        const langIndex = url.indexOf("help.companio.co/") + "help.companio.co/".length
-        const lang = url.substring(langIndex, langIndex + 2)
-        title = await getHelpDeskArticles(lang, url)
-      }
-      return {
-        url,
-        title,
-        clicks: item.clicks
-      }
-    })
 
-    pagesArr = await Promise.all(promises)
+    if (siteUrl === process.env.SITEURL) {
+      // Process both cEn and cEs arrays
+      const cEnPromises = pages.topEn.map(async item => {
+        const url = item.keys[0]
+        const slug = extractSlugFromUrl(url)
+        let title = await getPostTitleBySlug(siteUrl, slug)
+        if (url.includes(process.env.SITEURL2)) {
+          title = await getPostTitleBySlug(`${process.env.SITEURL2}/es`, slug)
+        } else if (url.includes(`${process.env.SITEURL3}`)) {
+          const langIndex = url.indexOf(`${process.env.SITEURL3}/`) + `${process.env.SITEURL3}/`.length
+          const lang = url.substring(langIndex, langIndex + 2)
+          title = await getHelpDeskArticles(lang, url)
+        }
+        return {
+          site: siteUrl,
+          lang: "en",
+          url,
+          title,
+          clicks: item.clicks
+        }
+      })
 
+      const cEsPromises = pages.topEs.map(async item => {
+        const url = item.keys[0]
+        const slug = extractSlugFromUrl(url)
+        let title = await getPostTitleBySlug(siteUrl, slug)
+        if (url.includes(process.env.SITEURL2)) {
+          title = await getPostTitleBySlug(`${process.env.SITEURL2}/es`, slug)
+        } else if (url.includes(`${process.env.SITEURL3}`)) {
+          const langIndex = url.indexOf(`${process.env.SITEURL3}/`) + `${process.env.SITEURL3}/`.length
+          const lang = url.substring(langIndex, langIndex + 2)
+          title = await getHelpDeskArticles(lang, url)
+        }
+        return {
+          site: siteUrl,
+          lang: "es",
+          url,
+          title,
+          clicks: item.clicks
+        }
+      })
+
+      const [cEnResults, cEsResults] = await Promise.all([Promise.all(cEnPromises), Promise.all(cEsPromises)])
+
+      // Concatenate cEnResults and cEsResults arrays
+      pagesArr = cEnResults.concat(cEsResults)
+    } else {
+      const tuempresaArr = pages.topPages
+
+      // Process tuempresaArr
+      await Promise.all(
+        tuempresaArr.map(async item => {
+          const url = item.keys[0]
+          const slug = extractSlugFromUrl(url)
+          const title = await getPostTitleBySlug(siteUrl, slug)
+          pagesArr.push({ site: siteUrl, url, title, clicks: item.clicks })
+        })
+      )
+    }
     console.log(pagesArr)
-
-    // return pagesArr
+    //return pagesArr
   } catch (error) {
     console.error("Error fetching post title:", error.message)
     throw error
