@@ -25,7 +25,7 @@ async function agentsArray() {
     const agentsOperator = agentsArray
       .filter(agent => agent.type === "operator")
       .filter(agent => agent.details.title === null)
-      .filter(agent => agent.details.last_name !== "Pohuliaiev" && agent.details.last_name !== "Oliveira" && agent.details.last_name !== "Calvelo" && agent.details.last_name !== "Companio" && agent.details.last_name !== "Fonseca da Silva" && agent.details.last_name !== "PIñas")
+      .filter(agent => agent.details.last_name !== process.env.LASTNAME1 && agent.details.last_name !== process.env.LASTNAME2 && agent.details.last_name !== process.env.LASTNAME3 && agent.details.last_name !== process.env.LASTNAME4 && agent.details.last_name !== process.env.LASTNAME5 && agent.details.last_name !== process.env.LASTNAME6)
 
     agentsOperator.forEach(function (operator) {
       agents.push({
