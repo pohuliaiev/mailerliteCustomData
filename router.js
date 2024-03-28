@@ -91,6 +91,8 @@ router.get("/config", mainController.config("Config"))
 
 router.get("/reviews", mainController.rewievsDisplay(reviewsCollection, "/reviews-update", "Ranking and reviews"))
 
+router.get("/cornerstones", mainController.CornerStonesDisplay("Cornerstones"))
+
 router.post("/reviews-update", mainController.reviewsUpdate())
 
 router.post("/seo-update-companio", mainController.SeoUpdate("companio.co"))

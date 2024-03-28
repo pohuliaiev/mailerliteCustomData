@@ -8,6 +8,7 @@ const dateCollection = require("../db").db().collection("date")
 const clickDataCollection = require("../db").db().collection("clickData")
 const reviewsCollection = require("../db").db().collection("reviews")
 const seoCollection = require("../db").db().collection("seo")
+const cornerstonesCollection = require("../db").db().collection("cornerstones")
 
 const mailerliteImport = require("../mailerliteImport")
 const Table = require("../models/Table")
@@ -16,7 +17,7 @@ const CrispData = require("../models/Crisp")
 const DateRange = require("../models/DateRange")
 const Reviews = require("../models/Reviews")
 const { ObjectId } = require("mongodb")
-const returnSeoValues = require("../models/Seo")
+const { returnSeoValues, getTopPagesWithTitles } = require("../models/Seo")
 //const Test = require("../test")
 
 const formattedCurrentDate = Table.formattedCurrentDate
@@ -270,6 +271,28 @@ exports.showMailerlitePage = function (pageTitle) {
   }
 }
 
+exports.CornerStonesDisplay = function (pageTitle) {
+  return async function (req, res) {
+    try {
+      const cornerstonesTable = await cornerstonesCollection.find().toArray()
+      cornerstonesTable.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+      const lastUpdated = cornerstonesTable[0].date
+      const empresaData = cornerstonesTable.filter(item => item.sites.url === process.env.SITEURL4)
+      const cData = cornerstonesTable.filter(item => item.sites.url === process.env.SITEURL1)
+      const cDataEn = cData.filter(item => item.sites[1].articlesEn)
+      const cDataEs = cData.filter(item => item.sites[1].articlesEs)
+      cDataEn.sort((a, b) => b.clicks - a.clicks)
+      cDataEs.sort((a, b) => b.clicks - a.clicks)
+      empresaData.sort((a, b) => b.clicks - a.clicks)
+      const url = req.url
+      res.render("cornerstones", { url, pageTitle, lastUpdated, empresaData, cDataEn, cDataEs, cornerstonesTable })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
 exports.tableUpdate = async function (req, res) {
   try {
     const result = await mailerliteImport()
@@ -436,6 +459,58 @@ exports.SeoUpdate = function (url) {
       })
 
       await seoCollection.insertOne({ date: formattedCurrentDate(), site: url, clicks: data.clicks, impressions: data.impressions, ctr: data.ctr, position: data.position, mobile: data.mobile, desktop: data.desktop })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.CornerStonesUpdate = function (start, end, pageTitle) {
+  return async function (req, res) {
+    try {
+      const cornerstonesTable = await cornerstonesCollection.find().toArray()
+      const startDate = formatDate(start)
+      const endDate = formatDate(end)
+      const empresaData = await getTopPagesWithTitles(process.env.SITEURL4, startDate, endDate)
+      empresaData.sort((a, b) => b.clicks - a.clicks)
+      const cData = await getTopPagesWithTitles(process.env.SITEURL, startDate, endDate)
+      const cDataEn = cData.filter(item => item.lang === "en")
+      const cDataEs = cData.filter(item => item.lang === "es")
+      cDataEn.sort((a, b) => b.clicks - a.clicks)
+      cDataEs.sort((a, b) => b.clicks - a.clicks)
+      const url = req.url
+
+      /*
+      cornerstonesTable.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+      const startDateNonFormated = seoTable[0].date
+      const endDateNonFormated = formattedCurrentDate()
+      
+      console.log(startDate, endDate)
+
+      const data = await returnSeoValues(url, startDate, endDate)
+      // Send the updated data as JSON response
+      res.json({
+        success: true,
+        date: endDateNonFormated,
+        data
+      })
+*/
+      await cornerstonesCollection.insertOne({
+        date: end,
+        sites: [
+          {
+            url: process.env.SITEURL4,
+            articles: empresaData
+          },
+          {
+            url: process.env.SITEURL,
+            articlesEn: cDataEn,
+            articlesEs: cDataEs
+          }
+        ]
+      })
+      res.render("config", { url, pageTitle })
     } catch (error) {
       console.error("Error updating data:", error)
       res.status(500).json({ success: false, error: "Internal Server Error" })

@@ -267,8 +267,8 @@ async function getTopPagesWithTitles(siteUrl, startDate, endDate) {
         })
       )
     }
-    console.log(pagesArr)
-    //return pagesArr
+    // console.log(pagesArr)
+    return pagesArr
   } catch (error) {
     console.error("Error fetching post title:", error.message)
     throw error
