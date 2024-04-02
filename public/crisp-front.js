@@ -37,11 +37,12 @@ flatpickr("#calendar", {
   dateFormat: "d.m.Y",
   maxDate: new Date(),
   onChange: function (selectedDates, dateStr, instance) {
-    const firstSelectedDate = selectedDates[0].toISOString()
-    const secondSelectedDate = selectedDates[1].toISOString()
+    const firstSelectedDate = new Date(selectedDates[0].getFullYear(), selectedDates[0].getMonth(), selectedDates[0].getDate(), 0, 0, 0)
+    const secondSelectedDate = new Date(selectedDates[selectedDates.length - 1].getFullYear(), selectedDates[selectedDates.length - 1].getMonth(), selectedDates[selectedDates.length - 1].getDate(), 23, 59, 59)
 
-    firstDate = firstSelectedDate
-    secondDate = secondSelectedDate
+    firstDate = firstSelectedDate.toISOString()
+    secondDate = secondSelectedDate.toISOString()
+    console.log(firstDate, secondDate)
     if (selectedDates.length === 2) {
       rangeSelected = true
     }
