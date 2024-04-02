@@ -551,13 +551,14 @@ exports.crispDataUpdate = function () {
       const prevUnresolvedFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.unresolved, conversations.unresolved).toFixed(2))
       const prevSameDayfixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.sameDay, conversations.sameDay).toFixed(2))
       const prevAnotherDayFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.anotherDay, conversations.anotherDay).toFixed(2))
-
+      const prevPendingFixed = parseFloat(DateRange.calculatePercentageDifference(prevConversations.pending, conversations.pending).toFixed(2))
       res.json({
         success: true,
         periodConversations: conversations.uniqueArray.length,
         conversations: conversations.uniqueArray,
         resolved: conversations.resolved,
         unresolved: conversations.unresolved,
+        pending: conversations.pending,
         sameDay: conversations.sameDay,
         anotherDay: conversations.anotherDay,
         ratings,
@@ -565,7 +566,8 @@ exports.crispDataUpdate = function () {
         prevResolved: prevResolvedFixed,
         prevUnresolved: prevUnresolvedFixed,
         prevSameDay: prevSameDayfixed,
-        prevAnotherDay: prevAnotherDayFixed
+        prevAnotherDay: prevAnotherDayFixed,
+        prevPending: prevPendingFixed
       })
     } catch (error) {
       console.error("Error updating data:", error)

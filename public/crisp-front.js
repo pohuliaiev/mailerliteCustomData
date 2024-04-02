@@ -83,6 +83,7 @@ function udpateCrisp(url) {
           document.getElementById("solved").textContent = data.resolved
           document.getElementById("same_day").textContent = data.sameDay
           document.getElementById("another_day").textContent = data.anotherDay
+          document.getElementById("pending").textContent = data.pending
 
           document.getElementById("5_stars").textContent = data.ratings.stars_5
           document.getElementById("4_stars").textContent = data.ratings.stars_4
@@ -95,6 +96,7 @@ function udpateCrisp(url) {
           updateElementWithPercentage("solved_prev", data.prevResolved)
           updateElementWithPercentage("same_day_prev", data.prevSameDay)
           updateElementWithPercentage("another_day_prev", data.prevAnotherDay)
+          updateElementWithPercentage("pending_prev", data.prevPending)
         } else {
           loader.classList.add("d-none")
           fadeOverlay.style.display = "none"

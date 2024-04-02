@@ -89,11 +89,12 @@ async function conversationsArray(agent, first, last) {
 
     const resolved = uniqueArray.filter(obj => obj.state === "resolved")
     const unresolved = uniqueArray.filter(obj => obj.state === "unresolved")
+    const pending = uniqueArray.filter(obj => obj.state === "pending")
 
     const resolvedSameDay = resolved.filter(obj => isSameDay(obj.created_at, obj.updated_at))
     const resolvedAnotherDay = resolved.length - resolvedSameDay.length
 
-    return { uniqueArray, resolved: resolved.length, unresolved: unresolved.length, sameDay: resolvedSameDay.length, anotherDay: resolvedAnotherDay }
+    return { uniqueArray, resolved: resolved.length, unresolved: unresolved.length, sameDay: resolvedSameDay.length, anotherDay: resolvedAnotherDay, pending: pending.length }
   } catch (error) {
     console.error("Error listing conversations:", error)
     throw error
