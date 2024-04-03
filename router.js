@@ -124,6 +124,7 @@ router.get("/api/v1/mailerlite/:collection", async (req, res) => {
   const apiController = mainController.apiController(require("./db").db().collection(collection))
   apiController(req, res)
 })
+router.get("/api/v1/zappier/", mainController.testApiController())
 
 router.get("/api/v1/banks/:countryCode", async (req, res) => {
   const { countryCode } = req.params
@@ -155,5 +156,7 @@ router.get("/api/v1/banks/", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" })
   }
 })
+
+router.get("/slack_auth", mainController.slackRedirect)
 
 module.exports = router

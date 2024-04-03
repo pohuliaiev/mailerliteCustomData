@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@mailerlite/mailerlite-nodejs": "^1.2.1",
+    "@slack/web-api": "^7.0.2",
     "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",

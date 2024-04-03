@@ -18,6 +18,7 @@ const DateRange = require("../models/DateRange")
 const Reviews = require("../models/Reviews")
 const { ObjectId } = require("mongodb")
 const { returnSeoValues, getTopPagesWithTitles } = require("../models/Seo")
+const { WebClient } = require("@slack/web-api")
 //const Test = require("../test")
 
 const formattedCurrentDate = Table.formattedCurrentDate
@@ -220,6 +221,17 @@ exports.apiController = function (collection) {
     try {
       const data = await collection.find().toArray()
       res.json(sortingCollectionByDate(data))
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      res.status(500).send("Internal Server Error")
+    }
+  }
+}
+
+exports.testApiController = function () {
+  return async function (req, res, next) {
+    try {
+      res.json({ test: "Hello zappier" })
     } catch (error) {
       console.error("Error fetching data:", error)
       res.status(500).send("Internal Server Error")
@@ -534,6 +546,35 @@ exports.crispPage = function (pageTitle) {
       const errorMessages = req.flash("error")
       res.render("login", { errorMessages })
     }
+  }
+}
+
+exports.slackRedirect = async function (req, res) {
+  const web = new WebClient("")
+  const { code } = req.query
+
+  try {
+    // Exchange authorization code for OAuth access token
+    const response = await web.oauth.v2.access({
+      client_id: process.env.SLACKCLIENT,
+      client_secret: process.env.SLACKSECRET,
+      code: code,
+      redirect_uri: process.env.SLACKREDIRECT,
+      scopes: "chat:write"
+    })
+
+    // Extract access token from response
+    const accessToken = response.authed_user.access_token
+
+    // Store the access token securely (e.g., in environment variables or a database)
+    // For demonstration purposes, we'll log it here
+    console.log("Access Token:", accessToken)
+
+    // Respond with a message indicating that the authorization was successful
+    res.send("Authorization successful! You can now close this window.")
+  } catch (error) {
+    console.error("Error exchanging authorization code for access token:", error)
+    res.status(500).send("Error exchanging authorization code for access token.")
   }
 }
 
