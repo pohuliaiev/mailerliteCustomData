@@ -6,6 +6,7 @@ const mainController = require("./controllers/mainController")
 const Login = require("./models/Login")
 const dbCollection = require("./controllers/dbCollections")
 const { parseBanks } = require("./controllers/banks")
+const CrispData = require("./models/Crisp")
 
 const generalMainEnCollection = dbCollection.generalMainEnCollection
 const generalMainEsCollection = dbCollection.generalMainEsCollection
@@ -117,6 +118,8 @@ router.post("/login", (req, res) => {
   }
 })
 
+//API-controllers
+
 router.get("/api", mainController.apiDocs("API"))
 
 router.get("/api/v1/mailerlite/:collection", async (req, res) => {
@@ -125,6 +128,7 @@ router.get("/api/v1/mailerlite/:collection", async (req, res) => {
   apiController(req, res)
 })
 router.get("/api/v1/zappier/", mainController.testApiController())
+router.get("/api/v1/crisp/agents", mainController.crispAgentsApiController())
 
 router.get("/api/v1/banks/:countryCode", async (req, res) => {
   const { countryCode } = req.params
@@ -142,15 +146,30 @@ router.get("/api/v1/banks/:countryCode", async (req, res) => {
   }
 })
 
-router.get("/api/v1/banks/", async (req, res) => {
+router.get("/api/v1/banks/:countryCode", async (req, res) => {
+  const { countryCode } = req.params
   try {
-    const banks = await parseBanks()
-
-    if (banks) {
-      res.json({ banks })
+    const banksByCountry = await parseBanks()
+    const banksForCountry = banksByCountry[countryCode]
+    if (banksForCountry) {
+      res.json({ countryCode, banks: banksForCountry })
     } else {
       res.status(404).json({ error: "Country code not found" })
     }
+  } catch (error) {
+    console.error("Error fetching banks:", error)
+    res.status(500).json({ error: "Internal Server Error" })
+  }
+})
+
+router.get("/api/v1/crisp/data", async (req, res) => {
+  const agent = req.query.agent
+  const start = req.query.start
+  const end = req.query.end
+  try {
+    const [conversations, ratings] = await Promise.all([CrispData.conversations(agent, start, end), CrispData.ratings(agent, start, end)])
+
+    res.json({ agent, start, end, periodConversations: conversations.uniqueArray.length, resolved: conversations.resolved, unresolved: conversations.unresolved, pending: conversations.pending, sameDay: conversations.sameDay, anotherDay: conversations.anotherDay, ratings })
   } catch (error) {
     console.error("Error fetching banks:", error)
     res.status(500).json({ error: "Internal Server Error" })

@@ -239,6 +239,18 @@ exports.testApiController = function () {
   }
 }
 
+exports.crispAgentsApiController = function () {
+  return async function (req, res, next) {
+    try {
+      const agents = await CrispData.agents()
+      res.json({ agents })
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      res.status(500).send("Internal Server Error")
+    }
+  }
+}
+
 exports.apiDocs = function (pageTitle) {
   return async function (req, res, next) {
     try {

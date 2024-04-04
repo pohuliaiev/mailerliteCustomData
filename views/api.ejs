@@ -65,7 +65,84 @@
     }
   </code>
   </p>
-   
+  <h2 class="text-center">Crisp API</h2>
+  <p>I've decided to create simple API-routes for you, because I already have everything established it this app and can provide all data you need in very simple way</p>
+  <p>Here is endpoints list:
+    <ul class="list-group">
+      <li class="list-group-item"><code>/api/v1/crisp/agents</code> - Get agents list</li>
+      <li class="list-group-item"><code>/api/v1/crisp/data?agent={agent_id}&start={date_from_in_iso_string}&end={date_to_in_iso_string}</code> - Get agent statistics</li>
+    </ul>
+    <h3 class="text-center">Agents list</h3>
+    Response structure:
+    <code>
+      {
+        "agents": [
+          {
+            "id": "360f076c-5cf4-41d5-b649-c9bd05a3f360",
+            "name": "Lara Rivera"
+          },
+          {
+            "id": "634430bf-d3b3-4aa3-aa55-b2f977ede372",
+            "name": "Daniela Reyna"
+          },
+          {
+            "id": "6bdd1011-3512-438c-8daa-6a53d3ba7e94",
+            "name": "Tanya Khartnik"
+          },
+          {
+            "id": "78d9f4d4-6397-436b-b8f5-c458c1987cf4",
+            "name": "Anna Babii"
+          },
+          {
+            "id": "97b0fbb7-df31-4131-8fdc-39f1be816ec4",
+            "name": "José Hugo Pires"
+          },
+          {
+            "id": "c69c8a1e-e51e-44dc-b230-4b3518449b72",
+            "name": "Jonathan Levine"
+          },
+          {
+            "id": "e517fa04-66bc-477d-b9ed-4f6fc738cf89",
+            "name": "Florencia Villavicencio"
+          }
+        ]
+      }
+    </code>
+    <h3 class="text-center">Agent data</h3>
+
+    <code>
+      {<br>
+        "agent": "360f076c-5cf4-41d5-b649-c9bd05a3f360",<br>
+        "start": "2024-04-01T00:00:00.000Z",<br>
+        "end": "2024-04-01T23:59:59.000Z",<br>
+        "periodConversations": 18,<br>
+        "resolved": 12,<br>
+        "unresolved": 6,<br>
+        "pending": 0,<br>
+        "sameDay": 3,<br>
+        "anotherDay": 9,<br>
+        "ratings": {<br>
+          "stars_5": 0,<br>
+          "stars_4": 0,<br>
+          "stars_3": 0,<br>
+          "stars_2": 0,<br>
+          "stars_1": 0<br>
+        }<br>
+      }
+    </code>
+
+    <p>Date should be in <a href="https://www.w3schools.com/jsref/jsref_toisostring.asp" target="_blank">ISOString format</a> (see response example)</p>
+    <p>In the example we are trying to retrieve an information for the whole day of April the 1st 2024</p>
+    <p>Definitions:</p>
+    <ul>
+      <li><strong>periodConversations</strong> - all conversation in period</li>
+      <li><strong>unresolved</strong> - not resolved</li>
+      <li><strong>pending</strong> - awaiting for an answer</li>
+      <li><strong>sameDay</strong> - resolved same day</li>
+      <li><strong>anotherDay</strong> - resolved later</li>
+      <li><strong>anotherDay</strong> - resolved later</li>
+      <li><strong>ratings</strong> - operator scores</li>
+    </ul>
   </div>
 </main>
 
