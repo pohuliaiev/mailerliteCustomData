@@ -24,6 +24,8 @@ const onboardCollection = dbCollection.onboardCollection
 const clickDataCollection = dbCollection.clickDataCollection
 const seoCollection = dbCollection.seoCollection
 const reviewsCollection = dbCollection.reviewsCollection
+const consultingFollowCollection = dbCollection.consultingFollowCollection
+const consultingNoShowCollection = dbCollection.consultingNoShowCollection
 
 // Middleware to check if the user is authenticated
 const isAuthenticated = (req, res, next, view) => {
@@ -78,6 +80,12 @@ router.post("/update-pdf-en", mainController.automationUpdate(pdfEnCollection, p
 
 router.get("/pdf-es", mainController.showAutomation(pdfEsCollection, "/update-pdf-es", "PDF Spanish"))
 router.post("/update-pdf-es", mainController.automationUpdate(pdfEsCollection, process.env.PDFES))
+
+router.get("/cons-followup", mainController.showAutomation(consultingFollowCollection, "/update-cons-followup", "Consulting Sessions: Follow-Up"))
+router.post("/update-cons-followup", mainController.automationUpdate(consultingFollowCollection, process.env.CNSLTFLWUP))
+
+router.get("/cons-noshow", mainController.showAutomation(consultingNoShowCollection, "/update-cons-noshow", "Consulting Sessions: No Show"))
+router.post("/update-cons-noshow", mainController.automationUpdate(consultingNoShowCollection, process.env.CNSLTNSHW))
 
 router.get("/mailerlite", mainController.showMailerlitePage("Mailerlite automations list"))
 
