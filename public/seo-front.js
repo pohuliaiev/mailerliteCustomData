@@ -14,10 +14,6 @@ const lastDateOneInAweek = addDaysToDate(lastDateOne, 7)
 const lastDateEmpresa = document.getElementById("last-date-table-empresa").textContent.trim()
 const lastDateEmpresaInAweek = addDaysToDate(lastDateEmpresa, 7)
 
-//const lastDateValue = document.getElementById("last-date").textContent.trim()
-//const datePlusWeek = addDaysToDate(lastDateValue, 7)
-//document.getElementById("next-update").textContent = datePlusWeek
-
 const loader = document.getElementById("preloader")
 const fadeOverlay = document.getElementById("fadeOverlay")
 

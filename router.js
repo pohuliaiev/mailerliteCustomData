@@ -112,6 +112,8 @@ router.post("/seo-update-empresa", mainController.SeoUpdate("tuempresaenestonia.
 
 router.post("/add-glassdoor-ranking", mainController.addGlassdoor(reviewsCollection))
 
+router.post("/cornerstones-update", mainController.cornerStonesUpdate())
+
 router.post("/login", (req, res) => {
   const { password } = req.body
 

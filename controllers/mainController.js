@@ -490,12 +490,13 @@ exports.SeoUpdate = function (url) {
   }
 }
 
-exports.CornerStonesUpdate = function (start, end, pageTitle) {
+exports.cornerStonesUpdate = function () {
   return async function (req, res) {
     try {
       const cornerstonesTable = await cornerstonesCollection.find().toArray()
-      const startDate = formatDate(start)
-      const endDate = formatDate(end)
+      cornerstonesTable.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+      const startDate = formatDate(cornerstonesTable[0].date)
+      const endDate = formatDate(formattedCurrentDate())
       const empresaData = await getTopPagesWithTitles(process.env.SITEURL4, startDate, endDate)
       empresaData.sort((a, b) => b.clicks - a.clicks)
       const cData = await getTopPagesWithTitles(process.env.SITEURL, startDate, endDate)
@@ -503,25 +504,8 @@ exports.CornerStonesUpdate = function (start, end, pageTitle) {
       const cDataEs = cData.filter(item => item.lang === "es")
       cDataEn.sort((a, b) => b.clicks - a.clicks)
       cDataEs.sort((a, b) => b.clicks - a.clicks)
-      const url = req.url
-
-      /*
-      cornerstonesTable.sort((a, b) => parseDate(b.date) - parseDate(a.date))
-      const startDateNonFormated = seoTable[0].date
-      const endDateNonFormated = formattedCurrentDate()
-      
-      console.log(startDate, endDate)
-
-      const data = await returnSeoValues(url, startDate, endDate)
-      // Send the updated data as JSON response
-      res.json({
-        success: true,
-        date: endDateNonFormated,
-        data
-      })
-*/
       await cornerstonesCollection.insertOne({
-        date: end,
+        date: formattedCurrentDate(),
         sites: [
           {
             url: process.env.SITEURL4,
@@ -534,7 +518,12 @@ exports.CornerStonesUpdate = function (start, end, pageTitle) {
           }
         ]
       })
-      res.render("config", { url, pageTitle })
+      res.json({
+        success: true,
+        empresaData,
+        cDataEn,
+        cDataEs
+      })
     } catch (error) {
       console.error("Error updating data:", error)
       res.status(500).json({ success: false, error: "Internal Server Error" })
