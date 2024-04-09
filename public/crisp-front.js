@@ -7,12 +7,15 @@ const dateModal = new bootstrap.Modal("#dateModal", {
 })
 
 const updateButton = document.getElementById("update")
+const saveButton = document.getElementById("save_report")
 
 const loader = document.getElementById("preloader")
 const fadeOverlay = document.getElementById("fadeOverlay")
 
 let firstDate
 let secondDate
+let firstDateStr
+let secondDateStr
 let rangeSelected = false
 
 function updateElementWithPercentage(id, value) {
@@ -37,6 +40,8 @@ flatpickr("#calendar", {
   dateFormat: "d.m.Y",
   maxDate: new Date(),
   onChange: function (selectedDates, dateStr, instance) {
+    firstDateStr = selectedDates[0]
+    secondDateStr = selectedDates[selectedDates.length - 1]
     const firstSelectedDate = new Date(selectedDates[0].getFullYear(), selectedDates[0].getMonth(), selectedDates[0].getDate(), 0, 0, 0)
     const secondSelectedDate = new Date(selectedDates[selectedDates.length - 1].getFullYear(), selectedDates[selectedDates.length - 1].getMonth(), selectedDates[selectedDates.length - 1].getDate(), 23, 59, 59)
 
@@ -117,8 +122,43 @@ function udpateCrisp(url) {
   }
 }
 
+function saveCrispReport() {
+  const selectElement = document.getElementById("agents")
+  let agent = ""
+  if (agent !== 0) {
+    agent = selectElement.value
+  }
+  const selectedIndex = selectElement.selectedIndex
+  const selectedOption = selectElement.options[selectedIndex]
+  const agentName = selectedOption.textContent
+  const total = document.getElementById("total_conversations").textContent
+  const notSolved = document.getElementById("not_solved").textContent
+  const solved = document.getElementById("solved").textContent
+  const sameDay = document.getElementById("same_day").textContent
+  const anotherDay = document.getElementById("another_day").textContent
+  const pending = document.getElementById("pending").textContent
+  console.log({
+    id: agent,
+    agentName,
+    total,
+    notSolved,
+    solved,
+    sameDay,
+    anotherDay,
+    pending,
+    start_date: firstDateStr,
+    end_date: secondDateStr
+  })
+}
+
 if (updateButton) {
   updateButton.onclick = function () {
     udpateCrisp("/crisp-update")
+  }
+}
+
+if (saveButton) {
+  saveButton.onclick = function () {
+    saveCrispReport()
   }
 }
