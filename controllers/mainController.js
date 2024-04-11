@@ -9,6 +9,7 @@ const clickDataCollection = require("../db").db().collection("clickData")
 const reviewsCollection = require("../db").db().collection("reviews")
 const seoCollection = require("../db").db().collection("seo")
 const cornerstonesCollection = require("../db").db().collection("cornerstones")
+const crispReportCollection = require("../db").db().collection("crispReports")
 
 const mailerliteImport = require("../mailerliteImport")
 const Table = require("../models/Table")
@@ -663,6 +664,94 @@ exports.addGlassdoor = function (collection) {
       const updatedDoc = await collection.findOneAndUpdate({ _id: objectId }, { $set: { "glassdoor.glassRanking": ranking, "glassdoor.glassNumber": number } }, { new: true })
 
       res.json({ success: true, updatedDoc })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.addCrispReport = function () {
+  return async function (req, res) {
+    try {
+      const id = req.body.id
+      const agentName = req.body.agentName
+      const total = req.body.total
+      const notSolved = req.body.notSolved
+      const solved = req.body.solved
+      const sameDay = req.body.sameDay
+      const anotherDay = req.body.anotherDay
+      const pending = req.body.anotherDay
+      const period = `${req.body.start_date}-${req.body.end_date}`
+      const stars_5 = req.body.stars_5
+      const stars_4 = req.body.stars_4
+      const stars_3 = req.body.stars_3
+      const stars_2 = req.body.stars_2
+      const stars_1 = req.body.stars_1
+      await crispReportCollection.insertOne({
+        agentName,
+        id,
+        total,
+        notSolved,
+        solved,
+        sameDay,
+        anotherDay,
+        pending,
+        period,
+        stars_5,
+        stars_4,
+        stars_3,
+        stars_2,
+        stars_1
+      })
+      res.json({ success: true })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.crispReportDelete = function () {
+  return async function (req, res) {
+    try {
+      const id = req.body.id
+      const objectId = new ObjectId(id)
+      const result = await crispReportCollection.deleteOne({ _id: objectId })
+
+      if (result.deletedCount === 1) {
+        res.json({ success: true, message: "Report deleted successfully" })
+      } else {
+        res.status(404).json({ success: false, error: "Report not found" })
+      }
+    } catch (error) {
+      console.error("Error deleting report:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.crispReportsPage = function (pageTitle) {
+  return async function (req, res) {
+    try {
+      const agents = await CrispData.agents()
+      const url = req.url
+      res.render("reports", { url, pageTitle, agents })
+    } catch (error) {
+      console.error("Error updating data:", error)
+      res.status(500).json({ success: false, error: "Internal Server Error" })
+    }
+  }
+}
+
+exports.crispReportShow = function () {
+  return async function (req, res) {
+    try {
+      const id = req.body.id
+      const name = req.body.name
+      const reports = await crispReportCollection.find({ id }).toArray()
+
+      res.json({ success: true, reports, name })
     } catch (error) {
       console.error("Error updating data:", error)
       res.status(500).json({ success: false, error: "Internal Server Error" })

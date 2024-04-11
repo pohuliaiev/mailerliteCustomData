@@ -90,7 +90,9 @@ router.post("/update-cons-noshow", mainController.automationUpdate(consultingNoS
 router.get("/mailerlite", mainController.showMailerlitePage("Mailerlite automations list"))
 
 router.get("/crisp", mainController.crispPage("Crisp Data"))
+router.get("/crisp/reports", mainController.crispReportsPage("Agents reports"))
 router.post("/crisp-update", mainController.crispDataUpdate())
+router.post("/crisp-get-reports", mainController.crispReportShow())
 
 router.post("/add-comment", mainController.addComment(clickDataCollection))
 
@@ -113,6 +115,10 @@ router.post("/seo-update-empresa", mainController.SeoUpdate("tuempresaenestonia.
 router.post("/add-glassdoor-ranking", mainController.addGlassdoor(reviewsCollection))
 
 router.post("/cornerstones-update", mainController.cornerStonesUpdate())
+
+router.post("/add-crisp-report", mainController.addCrispReport())
+
+router.post("/delete-crisp-report", mainController.crispReportDelete())
 
 router.post("/login", (req, res) => {
   const { password } = req.body
