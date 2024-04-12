@@ -254,12 +254,17 @@ exports.crispAgentsApiController = function () {
 
 exports.apiDocs = function (pageTitle) {
   return async function (req, res, next) {
-    try {
-      const url = req.url
-      res.render("api", { url, pageTitle })
-    } catch (error) {
-      console.error("Error fetching data:", error)
-      res.status(500).send("Internal Server Error")
+    if (req.session.isAuthenticated) {
+      try {
+        const url = req.url
+        res.render("api", { url, pageTitle })
+      } catch (error) {
+        console.error("Error fetching data:", error)
+        res.status(500).send("Internal Server Error")
+      }
+    } else {
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
     }
   }
 }
@@ -298,22 +303,27 @@ exports.showMailerlitePage = function (pageTitle) {
 
 exports.CornerStonesDisplay = function (pageTitle) {
   return async function (req, res) {
-    try {
-      const cornerstonesTable = await cornerstonesCollection.find().toArray()
-      cornerstonesTable.sort((a, b) => parseDate(b.date) - parseDate(a.date))
-      const lastUpdated = cornerstonesTable[0].date
-      const empresaData = cornerstonesTable.filter(item => item.sites.url === process.env.SITEURL4)
-      const cData = cornerstonesTable.filter(item => item.sites.url === process.env.SITEURL1)
-      const cDataEn = cData.filter(item => item.sites[1].articlesEn)
-      const cDataEs = cData.filter(item => item.sites[1].articlesEs)
-      cDataEn.sort((a, b) => b.clicks - a.clicks)
-      cDataEs.sort((a, b) => b.clicks - a.clicks)
-      empresaData.sort((a, b) => b.clicks - a.clicks)
-      const url = req.url
-      res.render("cornerstones", { url, pageTitle, lastUpdated, empresaData, cDataEn, cDataEs, cornerstonesTable })
-    } catch (error) {
-      console.error("Error updating data:", error)
-      res.status(500).json({ success: false, error: "Internal Server Error" })
+    if (req.session.isAuthenticated) {
+      try {
+        const cornerstonesTable = await cornerstonesCollection.find().toArray()
+        cornerstonesTable.sort((a, b) => parseDate(b.date) - parseDate(a.date))
+        const lastUpdated = cornerstonesTable[0].date
+        const empresaData = cornerstonesTable.filter(item => item.sites.url === process.env.SITEURL4)
+        const cData = cornerstonesTable.filter(item => item.sites.url === process.env.SITEURL1)
+        const cDataEn = cData.filter(item => item.sites[1].articlesEn)
+        const cDataEs = cData.filter(item => item.sites[1].articlesEs)
+        cDataEn.sort((a, b) => b.clicks - a.clicks)
+        cDataEs.sort((a, b) => b.clicks - a.clicks)
+        empresaData.sort((a, b) => b.clicks - a.clicks)
+        const url = req.url
+        res.render("cornerstones", { url, pageTitle, lastUpdated, empresaData, cDataEn, cDataEs, cornerstonesTable })
+      } catch (error) {
+        console.error("Error updating data:", error)
+        res.status(500).json({ success: false, error: "Internal Server Error" })
+      }
+    } else {
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
     }
   }
 }
@@ -733,28 +743,38 @@ exports.crispReportDelete = function () {
 
 exports.crispReportsPage = function (pageTitle) {
   return async function (req, res) {
-    try {
-      const agents = await CrispData.agents()
-      const url = req.url
-      res.render("reports", { url, pageTitle, agents })
-    } catch (error) {
-      console.error("Error updating data:", error)
-      res.status(500).json({ success: false, error: "Internal Server Error" })
+    if (req.session.isAuthenticated) {
+      try {
+        const agents = await CrispData.agents()
+        const url = req.url
+        res.render("reports", { url, pageTitle, agents })
+      } catch (error) {
+        console.error("Error updating data:", error)
+        res.status(500).json({ success: false, error: "Internal Server Error" })
+      }
+    } else {
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
     }
   }
 }
 
 exports.crispReportShow = function () {
   return async function (req, res) {
-    try {
-      const id = req.body.id
-      const name = req.body.name
-      const reports = await crispReportCollection.find({ id }).toArray()
+    if (req.session.isAuthenticated) {
+      try {
+        const id = req.body.id
+        const name = req.body.name
+        const reports = await crispReportCollection.find({ id }).toArray()
 
-      res.json({ success: true, reports, name })
-    } catch (error) {
-      console.error("Error updating data:", error)
-      res.status(500).json({ success: false, error: "Internal Server Error" })
+        res.json({ success: true, reports, name })
+      } catch (error) {
+        console.error("Error updating data:", error)
+        res.status(500).json({ success: false, error: "Internal Server Error" })
+      }
+    } else {
+      const errorMessages = req.flash("error")
+      res.render("login", { errorMessages })
     }
   }
 }
