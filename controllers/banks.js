@@ -10,7 +10,7 @@ async function parseBanks() {
     const data = await parser.parse()
 
     data.forEach(item => {
-      const name = item[undefined]
+      const name = item["EUROCAJARURAL_BCOEESMM081"]
       const countries = item["Countries "]
 
       if (name && countries) {
@@ -41,7 +41,7 @@ async function parseBanks() {
     Object.keys(banksByCountry).forEach(countryCode => {
       banksByCountry[countryCode] = [...banksByCountry[countryCode]].sort((a, b) => a.localeCompare(b))
     })
-
+    console.log(banksByCountry)
     return banksByCountry
   } catch (error) {
     console.error("Error parsing banks:", error)
