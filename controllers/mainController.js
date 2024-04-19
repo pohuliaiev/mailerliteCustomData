@@ -614,6 +614,7 @@ exports.crispDataUpdate = function () {
         pending: conversations.pending,
         sameDay: conversations.sameDay,
         anotherDay: conversations.anotherDay,
+        unassigned: conversations.unassigned,
         ratings,
         prevConversations: prevConversationsFixed,
         prevResolved: prevResolvedFixed,

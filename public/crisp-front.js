@@ -101,6 +101,7 @@ function udpateCrisp(url) {
           document.getElementById("same_day").textContent = data.sameDay
           document.getElementById("another_day").textContent = data.anotherDay
           document.getElementById("pending").textContent = data.pending
+          document.getElementById("total_unassigned").textContent = data.unassigned
 
           document.getElementById("5_stars").textContent = data.ratings.stars_5
           document.getElementById("4_stars").textContent = data.ratings.stars_4

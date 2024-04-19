@@ -49,11 +49,14 @@ async function conversationsArray(agent, first, last) {
 
   const pageSize = 1000
   let allConversations = []
+  let unassigned = []
 
   let continueLoop = true
+  let continueLoopUnassigned = true
 
   try {
     let currentPage = 0
+    let currentPageUnassigned = 0
     let filterAssigned = ``
     if (agent !== "0") {
       filterAssigned = `filter_assigned=${agent}&`
@@ -75,6 +78,25 @@ async function conversationsArray(agent, first, last) {
 
       currentPage++
     }
+    //getting unassigned conversations
+    if (agent === "0") {
+      while (continueLoopUnassigned) {
+        const apiUrl = `https://api.crisp.chat/v1/website/${websiteId}/conversations/${currentPageUnassigned}/?filter_unassigned=1&filter_date_start=${first}&filter_date_end=${last}`
+        const response = await axios.get(apiUrl, { headers })
+        const resData = response.data.data
+
+        if (resData.length === 0) {
+          continueLoopUnassigned = false
+          break
+        }
+
+        resData.forEach(item => {
+          unassigned.push(item)
+        })
+
+        currentPageUnassigned++
+      }
+    }
     function removeDuplicates(arr) {
       return arr.filter((item, index, self) => {
         return (
@@ -86,6 +108,7 @@ async function conversationsArray(agent, first, last) {
       })
     }
     const uniqueArray = removeDuplicates(allConversations)
+    const uniqueArrayUnassigned = removeDuplicates(unassigned)
 
     const resolved = uniqueArray.filter(obj => obj.state === "resolved")
     const unresolved = uniqueArray.filter(obj => obj.state === "unresolved")
@@ -94,7 +117,7 @@ async function conversationsArray(agent, first, last) {
     const resolvedSameDay = resolved.filter(obj => isSameDay(obj.created_at, obj.updated_at))
     const resolvedAnotherDay = resolved.length - resolvedSameDay.length
 
-    return { uniqueArray, resolved: resolved.length, unresolved: unresolved.length, sameDay: resolvedSameDay.length, anotherDay: resolvedAnotherDay, pending: pending.length }
+    return { uniqueArray, resolved: resolved.length, unresolved: unresolved.length, sameDay: resolvedSameDay.length, anotherDay: resolvedAnotherDay, pending: pending.length, unassigned: uniqueArrayUnassigned.length }
   } catch (error) {
     console.error("Error listing conversations:", error)
     throw error
