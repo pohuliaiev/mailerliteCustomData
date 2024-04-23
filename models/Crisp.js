@@ -81,7 +81,7 @@ async function conversationsArray(agent, first, last) {
     //getting unassigned conversations
     if (agent === "0") {
       while (continueLoopUnassigned) {
-        const apiUrl = `https://api.crisp.chat/v1/website/${websiteId}/conversations/${currentPageUnassigned}/?filter_unassigned=1&filter_date_start=${first}&filter_date_end=${last}`
+        const apiUrl = `https://api.crisp.chat/v1/website/${websiteId}/conversations/${currentPageUnassigned}/?filter_unassigned=1&filter_not_resolved=1&filter_date_start=${first}&filter_date_end=${last}`
         const response = await axios.get(apiUrl, { headers })
         const resData = response.data.data
 
