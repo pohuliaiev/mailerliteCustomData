@@ -17,9 +17,11 @@ const MailerliteModel = require("../models/Mailerlite")
 const CrispData = require("../models/Crisp")
 const DateRange = require("../models/DateRange")
 const Reviews = require("../models/Reviews")
+const { verifySignature, handleUrlValidation } = require("../models/Zoom")
 const { ObjectId } = require("mongodb")
 const { returnSeoValues, getTopPagesWithTitles } = require("../models/Seo")
 const { WebClient } = require("@slack/web-api")
+const Clickup = require("../models/Clickup")
 //const Test = require("../test")
 
 const formattedCurrentDate = Table.formattedCurrentDate
@@ -778,4 +780,63 @@ exports.crispReportShow = function () {
       res.render("login", { errorMessages })
     }
   }
+}
+
+//creating clickup tasks while user registers on Zoom
+
+exports.zoomUrl = async function (req, res) {
+  const response = {}
+
+  const event = req.body.event
+  console.log(req.body.event)
+  if (!verifySignature(req)) {
+    response.message = "Unauthorized request to Zoom Webhook sample."
+    response.status = 401
+
+    return res.status(response.status).json(response)
+  }
+
+  const urlValidationResponse = handleUrlValidation(req)
+  if (urlValidationResponse) {
+    return res.status(urlValidationResponse.status).json(urlValidationResponse.message)
+  }
+
+  if (event === "webinar.registration_created") {
+    const zoomName = req.body.payload.object.registrant.first_name
+    const zoomLastName = req.body.payload.object.registrant.last_name
+    const zoomEmail = req.body.payload.object.registrant.email
+    const clickUpData = {
+      name: `${zoomName} ${zoomLastName}`,
+      status: "Open",
+      custom_fields: [
+        {
+          id: "cda4b179-9251-4484-a803-052c054435ac",
+          value: zoomEmail
+        },
+        {
+          id: "e8da29e0-857e-497d-a740-db87850f6aef",
+          value: `${zoomName} ${zoomLastName}`
+        },
+        {
+          id: "146b186a-d7a0-4b75-95ff-9947a61e67f9",
+          value: zoomEmail
+        },
+        {
+          id: "adb5978a-daf8-4d15-ba26-025b72a428f7",
+          value: zoomName
+        },
+        {
+          id: "24b2ff3a-67ee-4055-aae5-fb3af86c1ba2",
+          value: zoomLastName
+        },
+        {
+          id: "58686af3-ae16-4b18-89bf-79c78ec48b46",
+          value: 11
+        }
+      ]
+    }
+    await Clickup.createTask(clickUpData)
+  }
+
+  res.status(200).send("Webhook request processed successfully")
 }

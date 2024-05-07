@@ -194,4 +194,6 @@ router.get("/api/v1/crisp/data", async (req, res) => {
 
 router.get("/slack_auth", mainController.slackRedirect)
 
+router.post("/zoom", mainController.zoomUrl)
+
 module.exports = router
